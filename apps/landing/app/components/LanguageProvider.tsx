@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { generatedTranslations } from "../generatedTranslations";
 
 export type Language = string;
@@ -115,25 +115,45 @@ function translateTree(root: Node, language: Language) {
   visit(root);
 }
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, updateLanguage] = useState<Language>("id");
+function localizedPath(pathname: string, language: Language) {
+  const segments = pathname.split("/").filter(Boolean);
+  if (segments[0] && /^[a-z]{2}(?:-[a-z]{2})?$/.test(segments[0])) segments.shift();
+  return `/${language}${segments.length ? `/${segments.join("/")}` : ""}`;
+}
+
+function localizeLinks(root: ParentNode, language: Language) {
+  root.querySelectorAll<HTMLAnchorElement>('a[href^="/"]').forEach(anchor => {
+    const raw = anchor.getAttribute("href");
+    if (!raw || raw.startsWith("//") || raw.startsWith("/api/") || raw.startsWith("/admin")) return;
+    const url = new URL(raw, window.location.origin);
+    url.pathname = localizedPath(url.pathname, language);
+    anchor.setAttribute("href", `${url.pathname}${url.search}${url.hash}`);
+  });
+}
+
+export function LanguageProvider({ children, initialLanguage = "id" }: { children: ReactNode; initialLanguage?: Language }) {
+  const [language, updateLanguage] = useState<Language>(initialLanguage);
   const [locales, setLocales] = useState<Locale[]>(defaultLocales);
   const setLanguage = useCallback((next: Language) => {
-    updateLanguage(next);
     localStorage.setItem("prorope_language", next);
+    const nextPath = localizedPath(window.location.pathname, next);
+    window.location.assign(`${nextPath}${window.location.search}${window.location.hash}`);
   }, []);
 
   useEffect(() => {
-    const stored = localStorage.getItem("prorope_language");
-    if (stored) updateLanguage(stored);
+    localStorage.setItem("prorope_language", initialLanguage);
     fetch(`${API_URL}/api/v1/locales`).then(response => response.ok ? response.json() : Promise.reject()).then((data: Locale[]) => { if (data.length) setLocales(data); }).catch(() => undefined);
-  }, []);
+  }, [initialLanguage]);
 
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dataset.language = language;
     translateTree(document.body, language);
-    const observer = new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => translateTree(node, language))));
+    localizeLinks(document, language);
+    const observer = new MutationObserver(records => records.forEach(record => record.addedNodes.forEach(node => {
+      translateTree(node, language);
+      if (node instanceof Element) localizeLinks(node, language);
+    })));
     observer.observe(document.body, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, [language]);
@@ -150,8 +170,39 @@ export function useLanguage() { return useContext(LanguageContext); }
 
 export function LanguageSwitcher() {
   const { language, locales, setLanguage } = useLanguage();
-  return <label className="language-switcher" aria-label="Pilihan bahasa">
-    <span aria-hidden="true">◎</span>
-    <select value={language} onChange={event => setLanguage(event.target.value)}>{locales.map(locale => <option value={locale.code} key={locale.code}>{locale.native_name}</option>)}</select>
-  </label>;
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const active = locales.find(locale => locale.code === language) || { code: language, name: language.toUpperCase(), native_name: language.toUpperCase() };
+
+  useEffect(() => {
+    const close = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("pointerdown", close);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", close);
+      document.removeEventListener("keydown", escape);
+    };
+  }, []);
+
+  return <div className={`language-switcher ${open ? "is-open" : ""}`} ref={rootRef}>
+    <button type="button" className="language-switcher__trigger" aria-label="Pilihan bahasa" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(value => !value)}>
+      <span className="language-switcher__globe" aria-hidden="true">◎</span>
+      <span>{active.native_name}</span>
+      <small>{active.code.toUpperCase()}</small>
+      <i aria-hidden="true" />
+    </button>
+    <div className="language-switcher__menu" role="listbox" aria-label="Pilihan bahasa">
+      <div className="language-switcher__heading">Pilih bahasa <span>Language</span></div>
+      {locales.map(locale => <button type="button" role="option" aria-selected={language === locale.code} className={language === locale.code ? "is-active" : ""} onClick={() => setLanguage(locale.code)} key={locale.code}>
+        <span className="language-switcher__code">{locale.code.toUpperCase()}</span>
+        <span><strong>{locale.native_name}</strong><small>{locale.name}</small></span>
+        <i aria-hidden="true">✓</i>
+      </button>)}
+    </div>
+  </div>;
 }

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { LanguageProvider } from "./components/LanguageProvider";
 
 const display = Barlow_Condensed({ variable: "--font-display", subsets: ["latin"], weight: ["500", "600", "700", "800"] });
 const sans = Inter({ variable: "--font-sans", subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
-export const metadata: Metadata = {
+const baseMetadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://prorope.id"),
   title: { default: "Pro Rope — Professional Rope Access Services", template: "%s — Pro Rope" },
   description: "Rope access services, building maintenance, high-rise cleaning, inspection, painting, rescue, dan training kerja di ketinggian dari Yogyakarta.",
@@ -15,6 +16,30 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: "Pro Rope — Reach beyond limits", description: "Professional rope access services. Safe, efficient, certified.", images: ["/prorope-logo.jpg"] },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="id"><body className={`${display.variable} ${sans.variable}`}><LanguageProvider>{children}</LanguageProvider></body></html>;
+export async function generateMetadata(): Promise<Metadata> {
+  const requestHeaders = await headers();
+  const locale = requestHeaders.get("x-prorope-locale");
+  const pathname = requestHeaders.get("x-prorope-pathname");
+  if (!locale || !pathname) return baseMetadata;
+
+  const rest = pathname.split("/").filter(Boolean).slice(1).join("/");
+  const pathFor = (code: string) => `/${code}${rest ? `/${rest}` : ""}`;
+  return {
+    ...baseMetadata,
+    alternates: {
+      canonical: pathFor(locale),
+      languages: {
+        "id-ID": pathFor("id"),
+        "en": pathFor("en"),
+        "zh-CN": pathFor("zh"),
+        "ja-JP": pathFor("ja"),
+        "x-default": pathFor("id"),
+      },
+    },
+  };
+}
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = (await headers()).get("x-prorope-locale") || "id";
+  return <html lang={locale}><body className={`${display.variable} ${sans.variable}`}><LanguageProvider initialLanguage={locale}>{children}</LanguageProvider></body></html>;
 }

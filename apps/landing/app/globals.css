@@ -122,3 +122,56 @@
 
 .language-switcher{display:flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid currentColor;font:700 10px/1 var(--font-sans);letter-spacing:.04em;white-space:nowrap}.language-switcher>span{color:var(--orange)}.language-switcher select{max-width:84px;border:0;outline:0;background:transparent;color:inherit;font:inherit;cursor:pointer}.site-header--dark .language-switcher select{color:#fff}.site-header--dark .language-switcher option{color:var(--ink);background:#fff}.cms-language-heading{display:flex;align-items:center;gap:9px;margin-top:24px;padding:10px 0;border-top:2px solid var(--ink);font-size:10px;text-transform:uppercase;letter-spacing:.12em}.cms-language-heading span{display:grid;place-items:center;width:28px;height:24px;background:var(--orange);color:var(--ink);font-weight:800}.cms-locale-tabs{display:flex;gap:6px;overflow:auto;margin-top:22px;padding-bottom:3px}.cms-locale-tabs button{border:1px solid #d8dad4;background:#f7f7f4;padding:8px 11px;font:700 9px var(--font-sans);text-transform:uppercase;white-space:nowrap}.cms-locale-tabs button.active{background:var(--ink);border-color:var(--ink);color:var(--orange)}
 @media(max-width:1000px){.language-switcher{align-self:flex-start;margin-top:4px}.main-nav .button--small{align-self:flex-start}}
+
+/* Locale menu */
+.language-switcher{position:relative;padding:0;border:0;font-family:var(--font-sans);white-space:nowrap}
+.language-switcher__trigger{height:38px;display:flex;align-items:center;gap:8px;padding:0 10px;border:1px solid rgba(255,255,255,.28);border-radius:7px;background:rgba(255,255,255,.06);color:inherit;font-size:10px;font-weight:700;transition:.18s}
+.language-switcher__trigger:hover,.language-switcher.is-open .language-switcher__trigger{border-color:var(--orange);background:rgba(255,209,0,.1)}
+.language-switcher__globe{color:var(--orange);font-size:15px}
+.language-switcher__trigger small{padding-left:8px;border-left:1px solid rgba(255,255,255,.25);font-size:8px;letter-spacing:.1em;opacity:.65}
+.language-switcher__trigger>i{width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .18s}
+.language-switcher.is-open .language-switcher__trigger>i{transform:rotate(225deg) translate(-1px,-1px)}
+.language-switcher__menu{position:absolute;z-index:80;top:calc(100% + 10px);right:0;width:245px;padding:7px;border:1px solid #3c4039;border-radius:10px;background:#111310;color:#fff;box-shadow:0 24px 65px rgba(0,0,0,.42);opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .16s,visibility .16s,transform .16s}
+.language-switcher.is-open .language-switcher__menu{opacity:1;visibility:visible;transform:translateY(0)}
+.language-switcher__heading{display:flex;justify-content:space-between;padding:9px 10px 11px;border-bottom:1px solid #2c302a;color:#f5f5f2;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.language-switcher__heading span{color:#7f857c;font-weight:500}
+.language-switcher__menu>button{width:100%;display:grid;grid-template-columns:36px 1fr 18px;align-items:center;gap:8px;padding:10px;border:0;border-radius:6px;background:transparent;color:#fff;text-align:left;transition:.15s}
+.language-switcher__menu>button:hover,.language-switcher__menu>button:focus-visible{background:#242821;outline:none}
+.language-switcher__menu>button.is-active{background:rgba(255,209,0,.1)}
+.language-switcher__code{display:grid;place-items:center;width:32px;height:27px;border:1px solid #3c4039;border-radius:4px;color:var(--orange);font-size:8px;font-weight:800;letter-spacing:.08em}
+.language-switcher__menu strong,.language-switcher__menu small{display:block}
+.language-switcher__menu strong{font-size:11px;line-height:1.2}
+.language-switcher__menu small{margin-top:3px;color:#858b82;font-size:8px}
+.language-switcher__menu>button>i{color:var(--orange);font-style:normal;opacity:0}
+.language-switcher__menu>button.is-active>i{opacity:1}
+
+/* Hero layout: keep content in flow so actions and proof points never overlap. */
+.hero{height:100svh}
+.hero__content{padding-top:clamp(54px,8vh,90px)}
+.hero__meta{position:static;display:flex;gap:40px;width:min(720px,75%);margin-top:clamp(42px,7vh,82px);padding-top:20px;border-top:1px solid rgba(255,255,255,.2)}
+.hero__meta span{white-space:nowrap}
+
+@media(max-width:1000px){
+  .hero__content{padding-top:clamp(45px,6vh,65px)}
+  .hero__meta{position:static;bottom:auto}
+}
+
+@media(max-width:700px){
+  .hero{height:auto;min-height:max(720px,100svh)}
+  .hero__image{left:0;opacity:.52;background-position:58% center}
+  .hero__content{padding-top:54px;padding-bottom:34px}
+  .hero .eyebrow{margin-bottom:25px;font-size:9px;letter-spacing:.16em}
+  .hero h1{font-size:clamp(62px,20vw,82px);line-height:.78;margin-bottom:25px;max-width:92%}
+  .hero__lead{font-size:15px;line-height:1.6;max-width:92%;margin-bottom:26px}
+  .hero__actions{align-items:flex-start;flex-direction:row;flex-wrap:wrap;gap:20px 25px}
+  .hero__actions .button{padding:16px 18px}
+  .hero__meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;margin-top:34px;padding-top:17px}
+  .hero__meta span{white-space:normal;line-height:1.45}
+  .hero__meta b{display:block;margin:0 0 4px}
+  .hero__rope{left:84%;opacity:.75}
+  .hero__sidecopy{display:none}
+}
+
+@media(max-width:1000px){
+  .language-switcher__menu{position:fixed;top:auto;right:20px;bottom:20px;left:20px;width:auto}
+}
