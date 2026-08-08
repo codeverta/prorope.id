@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import { Footer } from "../components/Footer";
+import { PageHero } from "../components/PageHero";
+export const metadata: Metadata = { title: "Equipment Supplier" };
+const categories = ["Harness & body support", "Helmets & head protection", "Ropes & lanyards", "Connectors & carabiners", "Descenders & ascenders", "Rigging & rescue equipment"];
+export default function Products() { return <><main><PageHero eyebrow="Equipment supplier" title="GEAR FOR THE VERTICAL WORLD." text="Perlengkapan terpilih untuk rope access, rescue, dan pekerjaan di ketinggian—disesuaikan dengan aplikasi dan kebutuhan tim." image="https://images.unsplash.com/photo-1526481280695-3c687fd643ed?auto=format&fit=crop&w=1800&q=90" /><section className="section"><div className="shell section-heading section-heading--split"><div><p className="eyebrow">Product categories</p><h2 className="display-title">Choose with<br /><em>confidence.</em></h2></div><p>Kami membantu mengidentifikasi kebutuhan, kompatibilitas sistem, dan konfigurasi kit. Hubungi kami untuk daftar produk dan ketersediaan terbaru.</p></div><div className="shell product-grid">{categories.map((c, i) => <a href="/contact" key={c}><span>0{i + 1}</span><h3>{c}</h3><p>Consult product selection and availability.</p><i>Ask for catalogue ↗</i></a>)}</div></section></main><Footer /></>; }

@@ -1,0 +1,37 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { Footer } from "./Footer";
+import { PageHero } from "./PageHero";
+import type { PublicPost } from "./NewsListing";
+import { useLanguage } from "./LanguageProvider";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+type ArticlePost = PublicPost;
+
+function ArticleBody({ body }: { body: string }) {
+  const blocks = body.split(/\n\s*\n/).map(block => block.trim()).filter(Boolean);
+  return <>{blocks.map((block, index) => {
+    if (block.startsWith("### ")) return <h3 key={index}>{block.slice(4)}</h3>;
+    if (block.startsWith("## ")) return <h2 key={index}>{block.slice(3)}</h2>;
+    if (block.startsWith("> ")) return <blockquote key={index}>{block.slice(2)}</blockquote>;
+    const lines = block.split("\n");
+    if (lines.every(line => line.startsWith("- "))) return <ul key={index}>{lines.map(line => <li key={line}>{line.slice(2)}</li>)}</ul>;
+    return <p key={index}>{block}</p>;
+  })}</>;
+}
+
+export function NewsArticleContent({ slug, initialPost }: { slug: string; initialPost: ArticlePost }) {
+  const { language, t } = useLanguage();
+  const [post, setPost] = useState(initialPost);
+  useEffect(() => { fetch(`${API_URL}/api/v1/posts/${encodeURIComponent(slug)}`).then(response => response.ok ? response.json() : Promise.reject()).then((data: ArticlePost) => setPost({ ...data, image_url: data.image_url || initialPost.image_url })).catch(() => undefined); }, [slug, initialPost.image_url]);
+  const locale = language === "id" ? "id-ID" : language === "zh" ? "zh-CN" : language === "ja" ? "ja-JP" : "en-GB";
+  const date = post.published_at ? new Date(post.published_at).toLocaleDateString(locale, { day: "2-digit", month: "long", year: "numeric" }) : t("Catatan Lapangan", "Field Note");
+  const fallbackBody = "Pekerjaan di ketinggian membutuhkan keputusan metode yang tepat sebelum teknisi memasang tali pertama. Kondisi struktur, aktivitas di bawah, durasi kerja, dan kebutuhan akses ulang sama-sama memengaruhi rencana.\n\n## Mulai dari kondisi nyata di lapangan\n\nSurvey membantu tim memahami titik anchor, jalur akses, potensi benda jatuh, kondisi cuaca, serta interaksi dengan operasional pengguna gedung. Informasi ini kemudian diterjemahkan menjadi metode kerja, kebutuhan personel, peralatan, dan rescue plan.\n\n> Metode akses yang efisien adalah metode yang mengendalikan risiko sekaligus mendukung kualitas hasil pekerjaan.\n\n## Dokumentasi sama pentingnya dengan eksekusi\n\nCatatan inspeksi peralatan, toolbox meeting, foto pekerjaan, temuan, dan handover membuat pekerjaan dapat diverifikasi.";
+  const fallbackBodyEN = "Work at height requires the right access decision before a technician installs the first rope. Structural conditions, activity below, work duration, and the need for repeat access all shape the plan.\n\n## Start with real site conditions\n\nA survey helps the team understand anchor points, access routes, dropped-object risks, weather conditions, and interaction with building operations. This information becomes the work method, personnel and equipment requirements, and rescue plan.\n\n> An efficient access method controls risk while supporting the quality of the work.\n\n## Documentation matters as much as execution\n\nEquipment inspection records, toolbox meetings, work photos, findings, and handover documents make the work verifiable.";
+  const translation = post.translations[language] || post.translations.en || post.translations.id;
+  const title = translation.title;
+  const excerpt = translation.excerpt;
+  const body = translation.body || (language === "id" ? fallbackBody : fallbackBodyEN);
+  return <><main><PageHero eyebrow={`${post.category} · ${date}`} title={title.toUpperCase()} text={excerpt} image={post.image_url} /><article className="article-body"><ArticleBody body={body} /></article><section className="section about-cta"><div className="shell about-cta__inner"><h2 className="display-title">{t("Punya tantangan", "Have a vertical")}<br /><em>{t("vertikal?", "challenge?")}</em></h2><a className="button" href="/contact">{t("Bicara dengan Pro Rope", "Talk to Pro Rope")} <span>↗</span></a></div></section></main><Footer /></>;
+}

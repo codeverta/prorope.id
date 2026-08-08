@@ -1,0 +1,6 @@
+import type { Metadata } from "next";
+import { Footer } from "../../components/Footer";
+import { PageHero } from "../../components/PageHero";
+import { schedules } from "../../data";
+export const metadata: Metadata = { title: "Training Schedule" };
+export default function Schedule() { return <><main><PageHero eyebrow="2026 training calendar" title="PLAN YOUR NEXT LEVEL." text="Jadwal kelas reguler dan opsi private training untuk perusahaan, komunitas, dan emergency response team." index="Schedule" /><section className="section"><div className="shell schedule-wrap"><div className="schedule-intro"><p className="eyebrow">Upcoming batches</p><h2 className="display-title">Choose a date.<br /><em>Build the skill.</em></h2><p>Kuota dapat berubah mengikuti konfirmasi peserta. Hubungi tim kami untuk jadwal terbaru dan persyaratan setiap program.</p></div><div className="schedule-list">{schedules.map((s, i) => <article key={s.program}><span>0{i + 1}</span><div><small>{s.batch}</small><h3>{s.program}</h3></div><div><small>Date</small><strong>{s.date}</strong></div><div><small>Location</small><strong>{s.location}</strong></div><div><small>Available</small><strong>{s.seats} seats</strong></div><a href="/training/registration">Register ↗</a></article>)}</div></div></section></main><Footer /></>; }
