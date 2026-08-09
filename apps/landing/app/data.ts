@@ -171,6 +171,15 @@ export const projects = [
   { title: "Roof & Gutter Maintenance", category: "Maintenance", location: "Solo", year: "2024", image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=85" },
 ];
 
+export const productCategories = [
+  "Harness & body support",
+  "Helmets & head protection",
+  "Ropes & lanyards",
+  "Connectors & carabiners",
+  "Descenders & ascenders",
+  "Rigging & rescue equipment",
+];
+
 export const posts = [
   { slug: "memilih-metode-akses-untuk-fasad", date: "02 Aug 2026", category: "Insight", title: "Memilih metode akses yang tepat untuk perawatan fasad", titleEn: "Choosing the right access method for facade maintenance", excerpt: "Rope access, gondola, atau scaffolding? Kenali pertimbangan keselamatan, waktu, dan area kerja sebelum proyek dimulai.", excerptEn: "Rope access, gondola, or scaffolding? Understand the safety, timing, and work-area considerations before a project begins.", image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1200&q=85" },
   { slug: "persiapan-tim-rescue", date: "18 Jul 2026", category: "Safety", title: "Lima hal yang harus siap sebelum tim bekerja di ketinggian", titleEn: "Five things to prepare before a team works at height", excerpt: "Perencanaan rescue bukan dokumen pelengkap. Ini adalah bagian aktif dari setiap pekerjaan vertikal.", excerptEn: "A rescue plan is not a supporting document. It is an active part of every vertical job.", image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=1200&q=85" },

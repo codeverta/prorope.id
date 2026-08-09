@@ -36,5 +36,6 @@ yarn-error.log*
 
 /dist/
 /.wrangler/
+/app/sitemap.xml/route.ts
 /outputs/
 /work/

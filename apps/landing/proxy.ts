@@ -1,12 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
+import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./app/site-config";
 
-const DEFAULT_LOCALE = "id";
-const SUPPORTED_LOCALES = new Set(["id", "en", "zh", "ja"]);
+const supportedLocales = new Set<string>(SUPPORTED_LOCALES);
 const PUBLIC_FILE_PATTERN = /\.[^/]+$/;
 const RESERVED_PATHS = ["/_next", "/_vinext", "/api", "/admin"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+    const headers = new Headers(request.headers);
+    headers.set("x-prorope-locale", DEFAULT_LOCALE);
+    headers.set("x-prorope-pathname", pathname);
+    return NextResponse.next({ request: { headers } });
+  }
 
   if (RESERVED_PATHS.some(path => pathname === path || pathname.startsWith(`${path}/`)) || PUBLIC_FILE_PATTERN.test(pathname)) {
     return NextResponse.next();
@@ -15,7 +22,7 @@ export function proxy(request: NextRequest) {
   const segments = pathname.split("/").filter(Boolean);
   const candidate = segments[0];
 
-  if (candidate && SUPPORTED_LOCALES.has(candidate.toLowerCase())) {
+  if (candidate && supportedLocales.has(candidate.toLowerCase())) {
     const locale = candidate.toLowerCase();
     const headers = new Headers(request.headers);
     headers.set("x-prorope-locale", locale);
