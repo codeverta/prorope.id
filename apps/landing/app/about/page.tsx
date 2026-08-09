@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
 import { Footer } from "../components/Footer";
 import { PageHero } from "../components/PageHero";
 import { values } from "../data";
-export const metadata: Metadata = { title: "About" };
 export default function About() { return <><main><PageHero eyebrow="About Pro Rope" title="WE WORK WHERE OTHERS STOP." text="Tim rope access Yogyakarta yang menggabungkan keberanian, kompetensi, dan disiplin keselamatan untuk menjangkau ruang kerja paling menantang." image="https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=1800&q=90" index="01 / 06" />
   <section className="section"><div className="shell story-grid"><div><p className="eyebrow">Our story</p><h2 className="display-title">Small footprint.<br /><em>Serious capability.</em></h2></div><div className="long-copy"><p>Pro Rope Services lahir dari keyakinan sederhana: pekerjaan di ketinggian dapat dilakukan lebih ringkas tanpa mengorbankan keselamatan, ketelitian, atau kualitas hasil.</p><p>Berbasis di Yogyakarta, kami melayani kebutuhan painting, glass cleaning, sealant, building maintenance, inspection, rescue support, dan pelatihan. Setiap proyek dimulai dengan mendengar kondisi lapangan, memahami risiko, lalu menyusun metode yang relevan.</p><blockquote>“Bukan hanya bisa mencapai titik kerja—tetapi memastikan setiap orang pulang dengan selamat.”</blockquote></div></div></section>
   <section className="section manifesto"><div className="shell"><p className="eyebrow eyebrow--light">Our commitment</p><h2>PLAN THE WORK.<br /><em>CONTROL THE RISK.</em><br />DELIVER THE RESULT.</h2></div></section>

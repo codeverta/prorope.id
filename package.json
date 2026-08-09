@@ -1,0 +1,10 @@
+{
+  "name": "prorope-id",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

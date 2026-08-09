@@ -16,9 +16,10 @@ const defaultLocales: Locale[] = [
 ];
 
 const pairs: Pair[] = [
+  ["Beranda", "Home"],
   ["Tentang", "About"], ["Layanan", "Services"], ["Pelatihan", "Training"], ["Proyek", "Projects"], ["Berita", "News"],
   ["Jadwal", "Schedule"], ["Pendaftaran", "Registration"], ["Pengecatan & Blasting", "Painting & Blasting"], ["Pemasok Peralatan", "Equipment Supplier"], ["Pembersihan Gedung Tinggi", "High-Rise Cleaning"], ["Perawatan Gedung", "Building Maintenance"],
-  ["Minta penawaran", "Request a quote"], ["Jelajahi semua layanan", "Explore all services"], ["Jelajahi semua program", "Explore all programs"],
+  ["Hubungi kami", "Contact us"], ["Minta penawaran", "Request a quote"], ["Jelajahi semua layanan", "Explore all services"], ["Jelajahi semua program", "Explore all programs"],
   ["Layanan Kami", "Our Services"], ["Bekerja aman di setiap ketinggian.", "Work safely at every height."], ["Akademi Pelatihan", "Training Academy"], ["Kompetensi untuk dunia nyata.", "Competence for the real world."],
   ["Penilaian visual & teknis", "Visual & technical assessment"], ["Kaca, fasad & akses sulit", "Glass, facade & difficult access"], ["Sealant, kebocoran & perbaikan fasad", "Sealant, leak & facade repair"], ["Proteksi permukaan & pelapisan", "Surface protection & coating"], ["Peralatan akses & rescue profesional", "Professional access & rescue gear"],
   ["Batch mendatang 2026", "Upcoming 2026 batches"], ["Daftarkan minat Anda", "Register your interest"], ["Masuk, bekerja & rescue", "Entry, work & rescue"], ["Rescue tim sudut tinggi", "High-angle team rescue"], ["Akses & positioning arborist", "Arborist access & positioning"],
@@ -194,13 +195,12 @@ export function LanguageSwitcher() {
   return <div className={`language-switcher ${open ? "is-open" : ""}`} ref={rootRef}>
     <button type="button" className="language-switcher__trigger" aria-label="Pilihan bahasa" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(value => !value)}>
       <span className="language-switcher__globe" aria-hidden="true">◎</span>
-      <span>{active.native_name}</span>
-      <small>{active.code.toUpperCase()}</small>
+      <span>{active.code.toUpperCase()}</span>
       <i aria-hidden="true" />
     </button>
     <div className="language-switcher__menu" role="listbox" aria-label="Pilihan bahasa">
       <div className="language-switcher__heading">Pilih bahasa <span>Language</span></div>
-      {locales.map(locale => <button type="button" role="option" aria-selected={language === locale.code} className={language === locale.code ? "is-active" : ""} onClick={() => setLanguage(locale.code)} key={locale.code}>
+      {locales.map(locale => <button type="button" role="option" aria-selected={language === locale.code} className={language === locale.code ? "is-active" : ""} onClick={() => { setOpen(false); setLanguage(locale.code); }} key={locale.code}>
         <span className="language-switcher__code">{locale.code.toUpperCase()}</span>
         <span><strong>{locale.native_name}</strong><small>{locale.name}</small></span>
         <i aria-hidden="true">✓</i>

@@ -43,6 +43,10 @@ export const generatedTranslations: Record<string, Record<string, string>> = {
     "zh": "建筑物维修",
     "ja": "ビルメンテナンス"
   },
+  "Hubungi kami": {
+    "zh": "联系我们",
+    "ja": "お問い合わせ"
+  },
   "Minta penawaran": {
     "zh": "索取报价",
     "ja": "見積もりを依頼する"

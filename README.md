@@ -12,21 +12,21 @@ apps/
 
 ## Local development
 
-Terminal 1:
+Install dependencies once:
 
 ```bash
-cd apps/backend
-go mod tidy
-go run ./cmd/api
+pnpm install --dir apps/landing
+cd apps/backend && go mod tidy
 ```
 
-Terminal 2:
+Start frontend and backend together:
 
 ```bash
-cd apps/landing
-npm install
-npm run dev
+pnpm run dev
 ```
+
+The frontend runs at `http://localhost:3000` and the backend at
+`http://localhost:8080`. Press `Ctrl+C` to stop both services.
 
 Open `http://localhost:3000` and `http://localhost:3000/admin`.
 

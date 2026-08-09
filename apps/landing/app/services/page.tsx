@@ -1,6 +1,4 @@
-import type { Metadata } from "next";
 import { Footer } from "../components/Footer";
 import { PageHero } from "../components/PageHero";
 import { services } from "../data";
-export const metadata: Metadata = { title: "Services" };
 export default function Services() { return <><main><PageHero eyebrow="Our services" title="VERTICAL ACCESS. PRACTICAL RESULTS." text="Solusi inspeksi, pembersihan, perawatan, pengecatan, dan perlengkapan untuk area yang sulit dijangkau." image={services[1].image} index="02 / 06" /><section className="section"><div className="shell services-catalog">{services.map((s, i) => <a href={`/services/${s.slug}`} className="service-detail-card" key={s.slug}><div className="service-detail-card__image" style={{ backgroundImage: `url(${s.image})` }}><span>0{i + 1}</span></div><div><p className="eyebrow">{s.eyebrow}</p><h2>{s.title}</h2><p>{s.summary}</p><ul>{s.capabilities.slice(0, 3).map(x => <li key={x}>{x}</li>)}</ul><i>Explore service ↗</i></div></a>)}</div></section><section className="contact-band contact-band--simple"><div className="shell"><div><p className="eyebrow eyebrow--light">Not sure what you need?</p><h2>We’ll help scope the safest approach.</h2></div><a className="button button--light" href="/contact">Talk to a specialist <span>↗</span></a></div></section></main><Footer /></>; }
