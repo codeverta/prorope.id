@@ -148,7 +148,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
           </div>
           <ClientLink className={active("/projects") ? "is-active" : ""} href={href("/projects")} onClick={closeAll}>Projects</ClientLink>
           <ClientLink className={active("/news", true) ? "is-active" : ""} href={href("/news")} onClick={closeAll}>News</ClientLink>
-          <LanguageSwitcher />
+          <LanguageSwitcher onSelect={closeAll} />
           <a className="button button--small" href="https://wa.me/6282210401004" target="_blank" rel="noreferrer" onClick={closeAll}>Contact us</a>
         </nav>
       </div>

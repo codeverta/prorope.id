@@ -105,6 +105,7 @@ function translated(value: string, language: Language) {
 
 function translateTree(root: Node, language: Language) {
   const visit = (node: Node) => {
+    if (node instanceof HTMLElement && node.hasAttribute("data-no-translate")) return;
     if (node.nodeType === Node.TEXT_NODE && node.textContent) node.textContent = translated(node.textContent, language);
     if (node instanceof HTMLElement) {
       if (["SCRIPT", "STYLE", "TEXTAREA", "OPTION"].includes(node.tagName) || node.isContentEditable) return;
@@ -172,7 +173,7 @@ export function LanguageProvider({ children, initialLanguage = "id" }: { childre
 
 export function useLanguage() { return useContext(LanguageContext); }
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ onSelect }: { onSelect?: () => void } = {}) {
   const { language, locales, setLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -195,13 +196,17 @@ export function LanguageSwitcher() {
 
   return <div className={`language-switcher ${open ? "is-open" : ""}`} ref={rootRef}>
     <button type="button" className="language-switcher__trigger" aria-label="Pilihan bahasa" aria-haspopup="listbox" aria-expanded={open} onClick={() => setOpen(value => !value)}>
-      <span className="language-switcher__globe" aria-hidden="true">◎</span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="language-switcher__globe" aria-hidden="true">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+        <path d="M2 12h20" />
+      </svg>
       <span>{active.code.toUpperCase()}</span>
       <i aria-hidden="true" />
     </button>
     <div className="language-switcher__menu" role="listbox" aria-label="Pilihan bahasa">
       <div className="language-switcher__heading">Pilih bahasa <span>Language</span></div>
-      {locales.map(locale => <button type="button" role="option" aria-selected={language === locale.code} className={language === locale.code ? "is-active" : ""} onClick={() => { setOpen(false); setLanguage(locale.code); }} key={locale.code}>
+      {locales.map(locale => <button type="button" role="option" aria-selected={language === locale.code} className={language === locale.code ? "is-active" : ""} onClick={() => { setOpen(false); onSelect?.(); setLanguage(locale.code); }} key={locale.code}>
         <span className="language-switcher__code">{locale.code.toUpperCase()}</span>
         <span><strong>{locale.native_name}</strong><small>{locale.name}</small></span>
         <i aria-hidden="true">✓</i>

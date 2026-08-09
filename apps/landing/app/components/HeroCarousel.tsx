@@ -4,16 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const slides = [
   {
-    image: "/images/hero/facade-rope-access.webp",
-    label: "Perawatan fasad gedung dengan rope access",
+    image: "/images/hero/facade-painting-yogyakarta.webp",
+    label: "Pengecatan fasad gedung dengan rope access di Yogyakarta",
+    position: "center center",
   },
   {
-    image: "/images/hero/industrial-inspection.webp",
-    label: "Inspeksi struktur industri di ketinggian",
-  },
-  {
-    image: "/images/hero/rescue-training.webp",
-    label: "Pelatihan rope access dan vertical rescue",
+    image: "/images/hero/facade-sealant-yogyakarta.webp",
+    label: "Perawatan sealant fasad dengan rope access",
+    position: "center 58%",
   },
 ] as const;
 
@@ -84,7 +82,7 @@ export function HeroCarousel() {
         {slides.map((slide, index) => (
           <div
             className={`hero-carousel__slide${index === activeSlide ? " is-active" : ""}`}
-            style={{ backgroundImage: `url(${slide.image})` }}
+            style={{ backgroundImage: `url(${slide.image})`, backgroundPosition: slide.position }}
             aria-hidden={index !== activeSlide}
             role="group"
             aria-roledescription="slide"
