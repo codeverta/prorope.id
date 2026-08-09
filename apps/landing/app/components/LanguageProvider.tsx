@@ -3,6 +3,7 @@
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { generatedTranslations } from "../generatedTranslations";
+import { navigateWithTransition } from "./navigationTransition";
 
 export type Language = string;
 export type Locale = { code: string; name: string; native_name: string };
@@ -140,7 +141,7 @@ export function LanguageProvider({ children, initialLanguage = "id" }: { childre
   const setLanguage = useCallback((next: Language) => {
     localStorage.setItem("prorope_language", next);
     const nextPath = localizedPath(window.location.pathname, next);
-    router.push(`${nextPath}${window.location.search}${window.location.hash}`);
+    navigateWithTransition(`${nextPath}${window.location.search}${window.location.hash}`, router.push);
   }, [router]);
 
   useEffect(() => {

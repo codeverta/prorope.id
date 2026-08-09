@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { AnchorHTMLAttributes, MouseEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { LanguageSwitcher, useLanguage } from "./LanguageProvider";
+import { navigateWithTransition } from "./navigationTransition";
 
 const serviceNav = [
   { label: "Inspection", href: "/services/inspection", note: "Visual & technical assessment" },
@@ -38,7 +39,7 @@ function ClientLink({ href, onClick, children, ...props }: AnchorHTMLAttributes<
     onClick?.(event);
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || props.target === "_blank") return;
     event.preventDefault();
-    router.push(href);
+    navigateWithTransition(href, router.push);
   };
   return <a {...props} href={href} onClick={navigate}>{children}</a>;
 }

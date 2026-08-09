@@ -1,11 +1,13 @@
 import { Footer } from "./components/Footer";
 import { LeadForm } from "./components/LeadForm";
 import { SiteHeader } from "./components/SiteHeader";
+import { ScrollReveal } from "./components/ScrollReveal";
 import { posts, projects, services, trainings, values } from "./data";
 
 export default function Home() {
   return <>
-    <main>
+    <ScrollReveal />
+    <main data-scroll-reveal-root>
       <section className="hero">
         <SiteHeader dark />
         <div className="hero__image" aria-hidden="true" />

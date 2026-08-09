@@ -217,3 +217,17 @@
 .admin-row>div p{margin:7px 0 0;color:#555b54;font-size:11px;line-height:1.45}
 .admin-row select{width:100%;border:1px solid #d6d9d3;border-radius:4px;background:#f6f7f3;padding:6px 5px;font-size:9px;text-transform:uppercase;color:var(--ink)}
 @media(max-width:700px){.admin-row{grid-template-columns:38px minmax(0,1fr) 92px}.admin-row time{display:none}.admin-row select{font-size:8px}}
+
+/* Lightweight route and scroll motion */
+.route-transition{min-height:100vh;animation:route-enter .36s cubic-bezier(.22,1,.36,1) both;transition:opacity .12s ease,transform .12s ease}
+html.is-page-leaving .route-transition{opacity:0;transform:translateY(5px)}
+@keyframes route-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+[data-scroll-reveal-root].reveal-enabled .scroll-reveal{opacity:0;transform:translateY(22px);transition:opacity .62s cubic-bezier(.22,1,.36,1),transform .62s cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms);will-change:opacity,transform}
+[data-scroll-reveal-root].reveal-enabled .scroll-reveal.is-revealed{opacity:1;transform:none}
+
+@media(prefers-reduced-motion:reduce){
+  .route-transition{animation:none;transition:none}
+  html.is-page-leaving .route-transition{opacity:1;transform:none}
+  [data-scroll-reveal-root].reveal-enabled .scroll-reveal{opacity:1;transform:none;transition:none}
+}
