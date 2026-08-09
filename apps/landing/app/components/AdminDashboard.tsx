@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
 import { NewsManager } from "./NewsManager";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
@@ -83,7 +82,7 @@ export function AdminDashboard() {
   }
 
   if (!token) return <main className="admin-login">
-    <Link className="admin-back" href="/">← Kembali ke website</Link>
+    <a className="admin-back" href="/">← Kembali ke website</a>
     <form onSubmit={login} autoComplete="off">
       <div className="admin-logo"><img src="/prorope-logo.jpg" alt="Pro Rope Services" /></div>
       <p className="eyebrow">Secure workspace</p><h1>Admin sign in</h1>
@@ -101,7 +100,7 @@ export function AdminDashboard() {
 
   return <main className="admin-shell">
     <aside>
-      <Link className="admin-brand" href="/"><img src="/prorope-logo.jpg" alt="Pro Rope Services" /></Link>
+      <a className="admin-brand" href="/"><img src="/prorope-logo.jpg" alt="Pro Rope Services" /></a>
       <nav>
         <button className={view === "overview" ? "active" : ""} onClick={() => setView("overview")}>⌂ <span>Overview</span></button>
         <button className={view === "leads" ? "active" : ""} onClick={() => setView("leads")}>◫ <span>Leads</span></button>
@@ -122,7 +121,7 @@ export function AdminDashboard() {
         </div>
         <div className={`admin-content ${view !== "overview" ? "admin-content--full" : ""}`}>
           <section><div className="admin-section-title"><div><p className="eyebrow">Inbox</p><h2>{view === "registrations" ? "Training registrations" : "Recent enquiries"}</h2></div><button onClick={() => load(token)}>Refresh ↻</button></div>{error && <p className="form-message error">{error}</p>}<AdminTable items={currentItems} kind={currentKind} limit={view === "overview" ? 7 : undefined} onStatus={updateStatus} /></section>
-          {view === "overview" && <aside className="admin-actions"><p className="eyebrow">Quick actions</p><h2>Content tools</h2><button onClick={() => setView("registrations")}><span>◉</span><div><strong>Training registrations</strong><small>Review participant interest</small></div>→</button><button onClick={() => setView("news")}><span>▤</span><div><strong>Write a story</strong><small>Create or edit an article</small></div>→</button><Link href="/training/schedule"><span>◉</span><div><strong>Training schedule</strong><small>Review next batches</small></div>→</Link></aside>}
+          {view === "overview" && <aside className="admin-actions"><p className="eyebrow">Quick actions</p><h2>Content tools</h2><button onClick={() => setView("registrations")}><span>◉</span><div><strong>Training registrations</strong><small>Review participant interest</small></div>→</button><button onClick={() => setView("news")}><span>▤</span><div><strong>Write a story</strong><small>Create or edit an article</small></div>→</button><a href="/training/schedule"><span>◉</span><div><strong>Training schedule</strong><small>Review next batches</small></div>→</a></aside>}
         </div>
       </>}
     </section>
