@@ -12,7 +12,7 @@ export function PageHero({ eyebrow, title, text, image, index }: { eyebrow: stri
           <span className="h-0.5 w-8 bg-[#ffd100]" aria-hidden="true" />
           {eyebrow}
         </p>
-        <h1 className="max-w-5xl font-[family-name:var(--font-display)] text-[clamp(58px,10vw,144px)] font-extrabold uppercase leading-[.78] tracking-[-.04em]">{title}</h1>
+        <h1 className="max-w-4xl font-[family-name:var(--font-display)] text-[clamp(36px,5vw,72px)] font-extrabold uppercase leading-[.88] tracking-[-.035em]">{title}</h1>
         <div className="mt-8 flex max-w-3xl items-end justify-between gap-8 border-l-4 border-[#ffd100] pl-5 md:pl-7">
           <p className="m-0 max-w-2xl text-base leading-7 text-white/75 md:text-lg">{text}</p>
           {index && <span className="hidden shrink-0 text-[10px] font-bold uppercase tracking-[.17em] text-[#ffd100] sm:block">{index}</span>}

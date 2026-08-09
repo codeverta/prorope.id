@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Footer } from "../../components/Footer";
 import { PageHero } from "../../components/PageHero";
 import { schedules } from "../../data";
@@ -35,7 +36,7 @@ export default function Schedule() {
                     <div><dt className="text-[9px] font-bold uppercase tracking-[.12em] text-neutral-500">Location</dt><dd className="mt-1 text-xs font-bold leading-5">{schedule.location}</dd></div>
                     <div><dt className="text-[9px] font-bold uppercase tracking-[.12em] text-neutral-500">Available</dt><dd className="mt-1 text-xs font-bold leading-5">{schedule.seats} seats</dd></div>
                   </dl>
-                  <a className="inline-flex items-center justify-between bg-[#ffd100] px-4 py-3 text-[9px] font-bold uppercase tracking-[.12em] transition group-hover:bg-[#0b0d0c] group-hover:text-white md:bg-transparent md:p-0 md:text-[#a58400]" href="/training/registration">Register <span>↗</span></a>
+                  <Link className="inline-flex items-center justify-between bg-[#ffd100] px-4 py-3 text-[9px] font-bold uppercase tracking-[.12em] transition group-hover:bg-[#0b0d0c] group-hover:text-white md:bg-transparent md:p-0 md:text-[#a58400]" href="/training/registration">Register <span>↗</span></Link>
                 </article>
               ))}
             </div>

@@ -2,6 +2,7 @@ import { Footer } from "./components/Footer";
 import { LeadForm } from "./components/LeadForm";
 import { SiteHeader } from "./components/SiteHeader";
 import { ScrollReveal } from "./components/ScrollReveal";
+import { HeroCarousel } from "./components/HeroCarousel";
 import { posts, projects, services, trainings, values } from "./data";
 
 export default function Home() {
@@ -10,7 +11,7 @@ export default function Home() {
     <main data-scroll-reveal-root>
       <section className="hero">
         <SiteHeader dark />
-        <div className="hero__image" aria-hidden="true" />
+        <HeroCarousel />
         <div className="hero__rope" aria-hidden="true"><span /></div>
         <div className="shell hero__content">
           <p className="eyebrow eyebrow--light">Professional rope access · Yogyakarta</p>

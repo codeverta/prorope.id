@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Footer } from "../../components/Footer";
 import { PageHero } from "../../components/PageHero";
 import { trainings } from "../../data";
@@ -64,9 +65,9 @@ export default async function TrainingDetail({ params }: { params: Promise<{ slu
                   </div>
                 ))}
               </div>
-              <a className="group mt-8 inline-flex w-full items-center justify-between gap-8 bg-[#ffd100] px-6 py-5 text-xs font-bold uppercase tracking-[.12em] transition hover:-translate-y-1 hover:bg-[#0b0d0c] hover:text-white" href="/training/registration">
+              <Link className="group mt-8 inline-flex w-full items-center justify-between gap-8 bg-[#ffd100] px-6 py-5 text-xs font-bold uppercase tracking-[.12em] transition hover:-translate-y-1 hover:bg-[#0b0d0c] hover:text-white" href="/training/registration">
                 Register interest <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">↗</span>
-              </a>
+              </Link>
             </aside>
           </div>
         </section>
@@ -110,7 +111,7 @@ export default async function TrainingDetail({ params }: { params: Promise<{ slu
               <h2 className="font-[family-name:var(--font-display)] text-[clamp(52px,8vw,106px)] font-bold uppercase leading-[.84] tracking-[-.035em]">Bring the training<br /><span className="text-[#e7bd00]">to your team.</span></h2>
             </div>
             <div className="flex flex-col items-start gap-5">
-              <a className="group inline-flex min-w-56 items-center justify-between gap-8 bg-[#ffd100] px-6 py-5 text-xs font-bold uppercase tracking-[.12em] transition hover:-translate-y-1 hover:bg-[#0b0d0c] hover:text-white" href="/training/registration">Register now <span className="transition-transform group-hover:translate-x-1">↗</span></a>
+              <Link className="group inline-flex min-w-56 items-center justify-between gap-8 bg-[#ffd100] px-6 py-5 text-xs font-bold uppercase tracking-[.12em] transition hover:-translate-y-1 hover:bg-[#0b0d0c] hover:text-white" href="/training/registration">Register now <span className="transition-transform group-hover:translate-x-1">↗</span></Link>
               <a className="border-b border-black pb-2 text-[10px] font-bold uppercase tracking-[.14em] transition hover:border-[#d7ae00] hover:text-[#a58400]" href="/contact">Discuss an in-house class →</a>
             </div>
           </div>

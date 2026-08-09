@@ -12,8 +12,8 @@ export function navigateWithTransition(href: string, navigate: Navigate) {
   window.clearTimeout(navigationTimer);
   window.clearTimeout(fallbackTimer);
   document.documentElement.classList.add("is-page-leaving");
-  navigationTimer = window.setTimeout(() => navigate(href), 120);
-  fallbackTimer = window.setTimeout(() => document.documentElement.classList.remove("is-page-leaving"), 1800);
+  navigationTimer = window.setTimeout(() => navigate(href), 80);
+  fallbackTimer = window.setTimeout(() => document.documentElement.classList.remove("is-page-leaving"), 2500);
 }
 
 export function finishNavigationTransition() {
