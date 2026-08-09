@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { generatedTranslations } from "../generatedTranslations";
 
 export type Language = string;
@@ -132,13 +133,14 @@ function localizeLinks(root: ParentNode, language: Language) {
 }
 
 export function LanguageProvider({ children, initialLanguage = "id" }: { children: ReactNode; initialLanguage?: Language }) {
-  const [language, updateLanguage] = useState<Language>(initialLanguage);
+  const router = useRouter();
+  const [language] = useState<Language>(initialLanguage);
   const [locales, setLocales] = useState<Locale[]>(defaultLocales);
   const setLanguage = useCallback((next: Language) => {
     localStorage.setItem("prorope_language", next);
     const nextPath = localizedPath(window.location.pathname, next);
-    window.location.assign(`${nextPath}${window.location.search}${window.location.hash}`);
-  }, []);
+    router.push(`${nextPath}${window.location.search}${window.location.hash}`);
+  }, [router]);
 
   useEffect(() => {
     localStorage.setItem("prorope_language", initialLanguage);

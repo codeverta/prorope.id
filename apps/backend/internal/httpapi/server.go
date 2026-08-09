@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strconv"
 	"strings"
@@ -65,6 +66,7 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("GET /api/v1/admin/leads", s.auth(http.HandlerFunc(s.adminLeads)))
 	mux.Handle("GET /api/v1/admin/registrations", s.auth(http.HandlerFunc(s.adminRegistrations)))
 	mux.Handle("PATCH /api/v1/admin/leads/{id}", s.auth(http.HandlerFunc(s.updateLead)))
+	mux.Handle("PATCH /api/v1/admin/registrations/{id}", s.auth(http.HandlerFunc(s.updateRegistration)))
 	mux.Handle("GET /api/v1/admin/summary", s.auth(http.HandlerFunc(s.adminSummary)))
 	mux.Handle("GET /api/v1/admin/posts", s.auth(http.HandlerFunc(s.adminPosts)))
 	mux.Handle("POST /api/v1/admin/posts", s.auth(http.HandlerFunc(s.createPost)))
@@ -76,7 +78,7 @@ func (s *Server) Handler() http.Handler {
 func (s *Server) cors(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
-		if origin == s.cfg.FrontendURL {
+		if allowedOrigin(s.cfg.FrontendURL, origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
 			w.Header().Set("Vary", "Origin")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -88,6 +90,25 @@ func (s *Server) cors(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func allowedOrigin(configured, origin string) bool {
+	requestURL, err := url.Parse(origin)
+	if err != nil || requestURL.Scheme == "" || requestURL.Host == "" {
+		return false
+	}
+	requestHost := strings.TrimPrefix(strings.ToLower(requestURL.Host), "www.")
+	for _, value := range strings.Split(configured, ",") {
+		allowedURL, parseErr := url.Parse(strings.TrimSpace(value))
+		if parseErr != nil || allowedURL.Scheme == "" || allowedURL.Host == "" {
+			continue
+		}
+		allowedHost := strings.TrimPrefix(strings.ToLower(allowedURL.Host), "www.")
+		if strings.EqualFold(requestURL.Scheme, allowedURL.Scheme) && requestHost == allowedHost {
+			return true
+		}
+	}
+	return false
 }
 func (s *Server) security(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -303,6 +324,27 @@ func (s *Server) updateLead(w http.ResponseWriter, r *http.Request) {
 	n, _ := res.RowsAffected()
 	if n == 0 {
 		jsonResponse(w, 404, apiError{"lead not found"})
+		return
+	}
+	jsonResponse(w, 200, map[string]string{"status": "updated"})
+}
+func (s *Server) updateRegistration(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	var in struct {
+		Status string `json:"status"`
+	}
+	if err != nil || decode(r, &in) != nil || !map[string]bool{"new": true, "contacted": true, "qualified": true, "closed": true}[in.Status] {
+		jsonResponse(w, 422, apiError{"invalid id or status"})
+		return
+	}
+	res, err := s.db.Exec("UPDATE registrations SET status=?,updated_at=CURRENT_TIMESTAMP WHERE id=?", in.Status, id)
+	if err != nil {
+		jsonResponse(w, 500, apiError{"update failed"})
+		return
+	}
+	n, _ := res.RowsAffected()
+	if n == 0 {
+		jsonResponse(w, 404, apiError{"registration not found"})
 		return
 	}
 	jsonResponse(w, 200, map[string]string{"status": "updated"})

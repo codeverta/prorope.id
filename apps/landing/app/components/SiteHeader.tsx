@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { LanguageSwitcher } from "./LanguageProvider";
+import { LanguageSwitcher, useLanguage } from "./LanguageProvider";
 
 const serviceNav = [
   { label: "Inspection", href: "/services/inspection", note: "Visual & technical assessment" },
@@ -21,56 +23,68 @@ const trainingNav = [
   { label: "Tree Climbing", href: "/training/tree-climbing", note: "Arborist access & positioning" },
 ];
 
+function withoutLocale(pathname: string) {
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts[0] && /^[a-z]{2}(?:-[a-z]{2})?$/.test(parts[0])) parts.shift();
+  return `/${parts.join("/")}`;
+}
+
+function withLocale(href: string, language: string) {
+  return `/${language}${href === "/" ? "" : href}`;
+}
+
 export function Brand({ inverse = false }: { inverse?: boolean }) {
+  const { language } = useLanguage();
   return (
-    <a className={`brand ${inverse ? "brand--inverse" : ""}`} href="/" aria-label="Pro Rope home">
-      <span className="brand__logo" aria-hidden="true">
-        <img src="/prorope-logo.jpg" alt="" />
-      </span>
-    </a>
+    <Link className={`brand ${inverse ? "brand--inverse" : ""}`} href={withLocale("/", language)} aria-label="Pro Rope home">
+      <span className="brand__logo" aria-hidden="true"><img src="/prorope-logo.jpg" alt="" /></span>
+    </Link>
   );
 }
 
 export function SiteHeader({ dark = false }: { dark?: boolean }) {
+  const { language } = useLanguage();
+  const pathname = withoutLocale(usePathname());
   const [open, setOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<"services" | "training" | null>(null);
   const closeAll = () => { setOpen(false); setOpenDropdown(null); };
+  const href = (path: string) => withLocale(path, language);
+  const active = (path: string, nested = false) => nested ? pathname === path || pathname.startsWith(`${path}/`) : pathname === path;
+
   return (
     <header className={`site-header ${dark ? "site-header--dark" : ""}`}>
       <div className="shell header-inner">
         <Brand inverse={dark} />
-        <button className="menu-button" aria-label="Buka menu" aria-expanded={open} onClick={() => setOpen(!open)}>
-          <span /><span />
-        </button>
+        <button className="menu-button" aria-label="Buka menu" aria-expanded={open} onClick={() => setOpen(!open)}><span /><span /></button>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navigasi utama">
-          <a href="/about" onClick={closeAll}>About</a>
-          <div className={`nav-group ${openDropdown === "services" ? "is-open" : ""}`}>
+          <Link className={active("/about") ? "is-active" : ""} href={href("/about")} onClick={closeAll}>About</Link>
+          <div className={`nav-group ${active("/services", true) ? "is-active" : ""} ${openDropdown === "services" ? "is-open" : ""}`}>
             <div className="nav-group__trigger">
-              <a href="/services" onClick={closeAll}>Services</a>
+              <Link href={href("/services")} onClick={closeAll}>Services</Link>
               <button aria-label="Buka menu Services" aria-expanded={openDropdown === "services"} aria-controls="services-dropdown" onClick={() => setOpenDropdown(openDropdown === "services" ? null : "services")}><span aria-hidden="true" /></button>
             </div>
             <div className="nav-dropdown" id="services-dropdown">
               <div className="nav-dropdown__head"><span>01</span><div><strong>Our Services</strong><small>Work safely at every height.</small></div></div>
-              {serviceNav.map((item, index) => <a key={item.href} href={item.href} onClick={closeAll}><span>0{index + 1}</span><div><strong>{item.label}</strong><small>{item.note}</small></div><i>↗</i></a>)}
-              <a className="nav-dropdown__all" href="/services" onClick={closeAll}>Explore all services <span>→</span></a>
+              {serviceNav.map((item, index) => <Link className={active(item.href) ? "is-active" : ""} key={item.href} href={href(item.href)} onClick={closeAll}><span>0{index + 1}</span><div><strong>{item.label}</strong><small>{item.note}</small></div><i>↗</i></Link>)}
+              <Link className="nav-dropdown__all" href={href("/services")} onClick={closeAll}>Explore all services <span>→</span></Link>
             </div>
           </div>
-          <div className={`nav-group nav-group--training ${openDropdown === "training" ? "is-open" : ""}`}>
+          <div className={`nav-group nav-group--training ${active("/training", true) ? "is-active" : ""} ${openDropdown === "training" ? "is-open" : ""}`}>
             <div className="nav-group__trigger">
-              <a href="/training" onClick={closeAll}>Training</a>
+              <Link href={href("/training")} onClick={closeAll}>Training</Link>
               <button aria-label="Buka menu Training" aria-expanded={openDropdown === "training"} aria-controls="training-dropdown" onClick={() => setOpenDropdown(openDropdown === "training" ? null : "training")}><span aria-hidden="true" /></button>
             </div>
             <div className="nav-dropdown nav-dropdown--training" id="training-dropdown">
               <div className="nav-dropdown__head"><span>02</span><div><strong>Training Academy</strong><small>Competence for the real world.</small></div></div>
-              {trainingNav.map((item, index) => <a key={item.href} href={item.href} onClick={closeAll}><span>0{index + 1}</span><div><strong>{item.label}</strong><small>{item.note}</small></div><i>↗</i></a>)}
-              <a className="nav-dropdown__all" href="/training" onClick={closeAll}>Explore all programs <span>→</span></a>
+              {trainingNav.map((item, index) => <Link className={active(item.href) ? "is-active" : ""} key={item.href} href={href(item.href)} onClick={closeAll}><span>0{index + 1}</span><div><strong>{item.label}</strong><small>{item.note}</small></div><i>↗</i></Link>)}
+              <Link className="nav-dropdown__all" href={href("/training")} onClick={closeAll}>Explore all programs <span>→</span></Link>
             </div>
           </div>
-          <a href="/projects" onClick={closeAll}>Projects</a>
-          <a href="/news" onClick={closeAll}>News</a>
+          <Link className={active("/projects") ? "is-active" : ""} href={href("/projects")} onClick={closeAll}>Projects</Link>
+          <Link className={active("/news", true) ? "is-active" : ""} href={href("/news")} onClick={closeAll}>News</Link>
           <a className="nav-instagram" href="https://www.instagram.com/prorope.services/" target="_blank" rel="noreferrer">Instagram ↗</a>
           <LanguageSwitcher />
-          <a className="button button--small" href="/contact">Request a quote</a>
+          <Link className={`button button--small ${active("/contact") ? "is-active" : ""}`} href={href("/contact")} onClick={closeAll}>Request a quote</Link>
         </nav>
       </div>
     </header>

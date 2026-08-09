@@ -41,5 +41,5 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const locale = (await headers()).get("x-prorope-locale") || "id";
-  return <html lang={locale}><body className={`${display.variable} ${sans.variable}`}><LanguageProvider initialLanguage={locale}>{children}</LanguageProvider></body></html>;
+  return <html lang={locale}><body className={`${display.variable} ${sans.variable}`}><LanguageProvider key={locale} initialLanguage={locale}>{children}</LanguageProvider></body></html>;
 }
