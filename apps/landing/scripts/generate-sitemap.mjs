@@ -12,10 +12,30 @@ const outputFile = path.join(generatedRouteDirectory, "route.ts");
 const legacyPublicFile = path.join(root, "public", "sitemap.xml");
 const excludedRoutes = new Set(["/admin"]);
 
+async function publishedCmsPosts() {
+  const apiUrl = (process.env.SITEMAP_API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
+  if (!apiUrl) return [];
+  try {
+    const response = await fetch(`${apiUrl}/api/v1/posts`);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const livePosts = await response.json();
+    return livePosts
+      .filter(post => typeof post.slug === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(post.slug))
+      .map(post => ({ path: `/news/${post.slug}`, lastModified: toISODate(post.published_at) }));
+  } catch (error) {
+    console.warn(`Could not load published CMS posts for sitemap: ${error.message}`);
+    return [];
+  }
+}
+
+const cmsPostRoutes = await publishedCmsPosts();
 const dynamicRoutes = new Map([
   ["/services/[slug]", services.map(({ slug }) => ({ path: `/services/${slug}` }))],
   ["/training/[slug]", trainings.map(({ slug }) => ({ path: `/training/${slug}` }))],
-  ["/news/[slug]", posts.map(({ slug, date }) => ({ path: `/news/${slug}`, lastModified: toISODate(date) }))],
+  ["/news/[slug]", [...new Map([
+    ...posts.map(({ slug, date }) => [`/news/${slug}`, { path: `/news/${slug}`, lastModified: toISODate(date) }]),
+    ...cmsPostRoutes.map(route => [route.path, route]),
+  ]).values()]],
 ]);
 
 function toISODate(value) {

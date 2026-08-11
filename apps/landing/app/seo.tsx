@@ -18,6 +18,14 @@ type SeoPage = {
   keywords?: Partial<LocalizedKeywords>;
 };
 
+export type RuntimeArticle = {
+  slug: string;
+  category: string;
+  image_url: string;
+  published_at: string;
+  translations: Record<string, { title: string; excerpt: string; body?: string }>;
+};
+
 export const localeTags: Record<SupportedLocale, string> = {
   id: "id_ID",
   en: "en_US",
@@ -304,6 +312,12 @@ function dynamicPage(pathname: string): SeoPage | undefined {
   }
 }
 
+function runtimeArticlePage(article: RuntimeArticle): SeoPage {
+  const fallback = article.translations.en || article.translations.id || Object.values(article.translations)[0];
+  const localized = (field: "title" | "excerpt") => Object.fromEntries(SUPPORTED_LOCALES.map(locale => [locale, article.translations[locale]?.[field] || fallback?.[field] || article.slug])) as LocalizedText;
+  return { kind: "article", image: socialImage(article.image_url || "/og.png"), title: localized("title"), description: localized("excerpt") };
+}
+
 export function normalizeLocale(locale?: string | null): SupportedLocale {
   const normalized = locale?.toLowerCase().split("-")[0];
   return SUPPORTED_LOCALES.includes(normalized as SupportedLocale) ? normalized as SupportedLocale : "id";
@@ -320,9 +334,10 @@ export function localizedPath(pathname: string, locale: SupportedLocale) {
   return `/${locale}${clean === "/" ? "" : clean}`;
 }
 
-export function getPageSeo(pathname: string, locale: SupportedLocale) {
+export function getPageSeo(pathname: string, locale: SupportedLocale, runtimeArticle?: RuntimeArticle) {
   const clean = stripLocale(pathname);
-  const page = pages[clean] || dynamicPage(clean) || notFoundPage;
+  const isRuntimeArticle = runtimeArticle && clean === `/news/${runtimeArticle.slug}`;
+  const page = pages[clean] || (isRuntimeArticle ? runtimeArticlePage(runtimeArticle) : dynamicPage(clean)) || notFoundPage;
   return { ...page, title: page.title[locale], description: page.description[locale], clean };
 }
 
@@ -337,7 +352,11 @@ function absoluteUrl(value: string) {
   return new URL(value, SITE_URL).toString();
 }
 
-function postDate(slug: string) {
+function postDate(slug: string, runtimeArticle?: RuntimeArticle) {
+  if (runtimeArticle?.slug === slug && runtimeArticle.published_at) {
+    const date = new Date(runtimeArticle.published_at);
+    return Number.isNaN(date.valueOf()) ? undefined : date.toISOString();
+  }
   return ({
     "memilih-metode-akses-untuk-fasad": "2026-08-02",
     "persiapan-tim-rescue": "2026-07-18",
@@ -345,15 +364,15 @@ function postDate(slug: string) {
   } as Record<string, string>)[slug];
 }
 
-export function createMetadata(pathname: string, locale: SupportedLocale): Metadata {
-  const { title, description, clean, image, kind, keywords } = getPageSeo(pathname, locale);
+export function createMetadata(pathname: string, locale: SupportedLocale, runtimeArticle?: RuntimeArticle): Metadata {
+  const { title, description, clean, image, kind, keywords } = getPageSeo(pathname, locale, runtimeArticle);
   const canonical = localizedPath(clean, locale);
   const fullTitle = clean === "/" ? `${SITE_NAME} | ${title}` : `${title} | ${SITE_NAME}`;
   const languages = Object.fromEntries(SUPPORTED_LOCALES.map(code => [languageTags[code], localizedPath(clean, code)]));
   const otherLocales = SUPPORTED_LOCALES.filter(code => code !== locale).map(code => localeTags[code]);
   const imageUrl = absoluteUrl(image);
   const slug = clean.split("/").at(-1) || "";
-  const publishedTime = kind === "article" ? postDate(slug) : undefined;
+  const publishedTime = kind === "article" ? postDate(slug, runtimeArticle) : undefined;
   const indexable = kind !== "private";
 
   const openGraph: NonNullable<Metadata["openGraph"]> = {
@@ -365,7 +384,7 @@ export function createMetadata(pathname: string, locale: SupportedLocale): Metad
     title: fullTitle,
     description,
     images: [{ url: imageUrl, alt: `${title} — ${SITE_NAME}` }],
-    ...(kind === "article" ? { publishedTime, modifiedTime: publishedTime, authors: [SITE_NAME], section: posts.find(post => post.slug === slug)?.category } : {}),
+    ...(kind === "article" ? { publishedTime, modifiedTime: publishedTime, authors: [SITE_NAME], section: runtimeArticle?.category || posts.find(post => post.slug === slug)?.category } : {}),
   };
 
   return {
@@ -437,7 +456,7 @@ function breadcrumbNode(clean: string, locale: SupportedLocale, title: string, p
   };
 }
 
-function entityForPage(clean: string, locale: SupportedLocale, title: string, description: string, pageUrl: string) {
+function entityForPage(clean: string, locale: SupportedLocale, title: string, description: string, pageUrl: string, runtimeArticle?: RuntimeArticle) {
   const [, section, slug] = clean.match(/^\/([^/]+)(?:\/([^/]+))?/) || [];
   if (section === "services" && slug) {
     const service = services.find(item => item.slug === slug);
@@ -459,10 +478,11 @@ function entityForPage(clean: string, locale: SupportedLocale, title: string, de
   }
   if (section === "news" && slug) {
     const post = posts.find(item => item.slug === slug);
-    if (!post) return undefined;
+    const livePost = runtimeArticle?.slug === slug ? runtimeArticle : undefined;
+    if (!post && !livePost) return undefined;
     return {
       "@type": "Article", "@id": `${pageUrl}#article`, headline: title, description, url: pageUrl, mainEntityOfPage: { "@id": `${pageUrl}#webpage` },
-      image: [absoluteUrl(socialImage(post.image))], datePublished: postDate(slug), dateModified: postDate(slug), articleSection: post.category,
+      image: [absoluteUrl(socialImage(livePost?.image_url || post?.image || "/og.png"))], datePublished: postDate(slug, livePost), dateModified: postDate(slug, livePost), articleSection: livePost?.category || post?.category,
       inLanguage: languageTags[locale], author: { "@id": organizationId }, publisher: { "@id": organizationId },
     };
   }
@@ -492,12 +512,12 @@ function scheduleEvents(locale: SupportedLocale) {
   }));
 }
 
-export function createStructuredData(pathname: string, locale: SupportedLocale) {
-  const { title, description, clean, image, kind } = getPageSeo(pathname, locale);
+export function createStructuredData(pathname: string, locale: SupportedLocale, runtimeArticle?: RuntimeArticle) {
+  const { title, description, clean, image, kind } = getPageSeo(pathname, locale, runtimeArticle);
   if (kind === "private") return undefined;
   const pageUrl = absoluteUrl(localizedPath(clean, locale));
   const breadcrumb = breadcrumbNode(clean, locale, title, pageUrl);
-  const entity = entityForPage(clean, locale, title, description, pageUrl);
+  const entity = entityForPage(clean, locale, title, description, pageUrl, runtimeArticle);
   const itemList = itemListForPage(clean, locale, pageUrl);
   const events = clean === "/training/schedule" ? scheduleEvents(locale) : [];
   const graph: Array<Record<string, unknown>> = [
@@ -525,8 +545,8 @@ export function createStructuredData(pathname: string, locale: SupportedLocale) 
   return { "@context": "https://schema.org", "@graph": graph };
 }
 
-export function StructuredData({ pathname, locale }: { pathname: string; locale: SupportedLocale }) {
-  const data = createStructuredData(pathname, locale);
+export function StructuredData({ pathname, locale, runtimeArticle }: { pathname: string; locale: SupportedLocale; runtimeArticle?: RuntimeArticle }) {
+  const data = createStructuredData(pathname, locale, runtimeArticle);
   if (!data) return null;
   const json = JSON.stringify(data).replaceAll("<", "\\u003c");
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
