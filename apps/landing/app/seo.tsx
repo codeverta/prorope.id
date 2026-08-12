@@ -246,10 +246,10 @@ const productCategoryNames: Record<SupportedLocale, string[]> = {
 };
 
 const projectNames: Record<SupportedLocale, string[]> = {
-  id: ["Pembersihan Kaca — Fasad Hotel", "Inspeksi Stack Industri", "Penggantian Sealant Fasad", "Simulasi High Angle Rescue", "Pelapisan Protektif Tower", "Perawatan Atap & Talang"],
+  id: ["Pembersihan Kaca dan Fasad", "Penggantian Sealant Fasad", "Pembersihan Sticker", "Pengecatan Gedung Fortuna", "Pelapisan Protektif Tower", "Perawatan Atap & Talang"],
   en: projects.map(project => project.title),
-  zh: ["酒店外墙玻璃清洁", "工业烟囱检查", "外墙密封胶更换", "高角度救援演练", "塔架防护涂层", "屋顶与排水沟维护"],
-  ja: ["ホテル外壁ガラス清掃", "産業用煙突点検", "外壁シーラント交換", "高角度救助訓練", "タワー保護コーティング", "屋根・雨樋メンテナンス"],
+  zh: ["玻璃与外墙清洁", "外墙密封胶更换", "贴纸清除", "Fortuna大楼涂装", "塔架防护涂层", "屋顶与排水沟维护"],
+  ja: ["ガラス・外壁清掃", "外壁シーラント交換", "ステッカー除去", "フォルトゥナビル塗装", "タワー保護コーティング", "屋根・雨樋メンテナンス"],
 };
 
 function socialImage(image: string) {

@@ -4,14 +4,24 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 const slides = [
   {
-    image: "/images/hero/facade-painting-yogyakarta.webp",
-    label: "Pengecatan fasad gedung dengan rope access di Yogyakarta",
-    position: "center center",
+    image: "/images/revisi/home/glass-facade-cleaning-bekasi.webp",
+    label: "Pembersihan kaca dan fasad di Bekasi",
+    position: "center 62%",
   },
   {
-    image: "/images/hero/facade-sealant-yogyakarta.webp",
-    label: "Perawatan sealant fasad dengan rope access",
+    image: "/images/revisi/home/facade-sealant-solo-grand-mall.webp",
+    label: "Penggantian sealant fasad Solo Grand Mall",
     position: "center 58%",
+  },
+  {
+    image: "/images/revisi/home/sticker-cleaning-bpjs-kebumen.webp",
+    label: "Pembersihan sticker BPJS Kebumen",
+    position: "center 58%",
+  },
+  {
+    image: "/images/revisi/home/painting-fortuna-jember.webp",
+    label: "Pengecatan Gedung Fortuna Jember dengan rope access",
+    position: "center center",
   },
 ] as const;
 

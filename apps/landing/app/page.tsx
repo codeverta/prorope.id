@@ -16,7 +16,7 @@ export default function Home() {
         <HeroRope />
         <div className="shell hero__content">
           <p className="eyebrow eyebrow--light">Professional rope access · Yogyakarta</p>
-          <h1 data-no-translate>REACH<br /><em>BEYOND</em><br />LIMITS.</h1>
+          <h1 data-no-translate><em>BEYOND</em><br />DIFFICULT<br />ACCESS</h1>
           <p className="hero__lead">Pekerjaan vertikal yang aman, efisien, dan presisi—dari inspeksi hingga perawatan gedung.</p>
           <div className="hero__actions"><a className="button" href="/contact">Diskusikan proyek <span>↗</span></a><a className="text-link text-link--light" href="/services">Explore services <span>→</span></a></div>
           <div className="hero__meta"><span><b>01</b> Safe by design</span><span><b>02</b> Certified team</span><span><b>03</b> Based in Yogyakarta</span></div>

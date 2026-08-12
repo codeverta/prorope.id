@@ -1,6 +1,7 @@
 "use client";
 
 import { CSSProperties, PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 type Motion = {
   x: number;
@@ -175,7 +176,7 @@ export function HeroRope() {
         onPointerMove={handlePointerMove}
         onPointerUp={releaseRope}
         onPointerCancel={releaseRope}
-      ><i /><b /></span>
+      ><Image src="/images/hero/ascender-device.png" alt="" width={500} height={757} sizes="(max-width: 700px) 62px, 76px" unoptimized draggable={false} /></span>
       <span className="hero__rope-label">DRAG • RELEASE</span>
     </div>
   );

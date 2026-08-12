@@ -1635,9 +1635,9 @@ export const generatedTranslations: Record<string, Record<string, string>> = {
     "zh": "遵循环境风险简报",
     "ja": "環境リスクに関する説明に従う"
   },
-  "Pembersihan Kaca — Fasad Hotel": {
-    "zh": "玻璃清洗——酒店外墙",
-    "ja": "ガラスクリーニング - ホテルのファサード"
+  "Pembersihan Kaca dan Fasad": {
+    "zh": "玻璃与外墙清洁",
+    "ja": "ガラス・外壁清掃"
   },
   "Inspeksi Stack Industri": {
     "zh": "工业堆栈检查",
@@ -1647,9 +1647,21 @@ export const generatedTranslations: Record<string, Record<string, string>> = {
     "zh": "外墙密封胶更换",
     "ja": "ファサードシーラントの交換"
   },
-  "Simulasi High Angle Rescue": {
-    "zh": "高角度救援钻机",
-    "ja": "ハイアングルレスキュー訓練"
+  "Pembersihan Sticker": {
+    "zh": "贴纸清除",
+    "ja": "ステッカー除去"
+  },
+  "Pengecatan Gedung Fortuna": {
+    "zh": "Fortuna大楼涂装",
+    "ja": "フォルトゥナビル塗装"
+  },
+  "Filter proyek": {
+    "zh": "项目筛选",
+    "ja": "プロジェクトフィルター"
+  },
+  "Belum ada proyek dalam kategori ini.": {
+    "zh": "此类别暂无项目。",
+    "ja": "このカテゴリーにはまだプロジェクトがありません。"
   },
   "Pelapisan Protektif Tower": {
     "zh": "塔保护涂层",

@@ -81,7 +81,21 @@ export function NewsManager({ token }: { token: string }) {
       <div className="admin-section-title"><div><p className="eyebrow">{editingID ? "Edit article" : "New article"}</p><h2>{editingID ? "Update story" : "Create story"}</h2></div>{editingID && <button type="button" onClick={reset}>Cancel</button>}</div>
       {notice && <p className="cms-notice">{notice}</p>}
       <div className="cms-fields"><label>Slug<input value={draft.slug} onChange={event => setDraft({ ...draft, slug: event.target.value })} placeholder="Otomatis dari judul Indonesia" /></label><label>Category<input required value={draft.category} onChange={event => setDraft({ ...draft, category: event.target.value })} placeholder="Safety" /></label></div>
-      <label>Cover image URL<input type="url" value={draft.image_url} onChange={event => setDraft({ ...draft, image_url: event.target.value })} placeholder="https://..." /></label>
+      <div className="cms-image-field">
+        <label htmlFor="cover-image-url">Cover image URL</label>
+        <input id="cover-image-url" type="url" value={draft.image_url} onChange={event => setDraft({ ...draft, image_url: event.target.value })} placeholder="https://cdn.domain.com/news/cover.webp" aria-describedby="cover-image-help" />
+        <div className="cms-image-guide" id="cover-image-help">
+          <strong>Cara menambahkan gambar</strong>
+          <ol>
+            <li>Upload gambar ke penyimpanan media publik, misalnya Cloudinary Media Library atau CDN/storage perusahaan.</li>
+            <li>Salin <b>delivery URL</b> atau <b>public/direct URL</b> gambarnya, lalu tempel di kolom ini.</li>
+            <li>Pastikan URL dapat dibuka tanpa login dan langsung menampilkan gambar—bukan halaman berbagi Google Drive.</li>
+          </ol>
+          <p>Contoh: <code>https://res.cloudinary.com/nama-cloud/image/upload/news/cover.webp</code></p>
+          <p>Jika memakai Cloudflare R2 untuk production, gunakan URL custom domain seperti <code>https://assets.prorope.id/news/cover.webp</code>.</p>
+        </div>
+        {draft.image_url && <div className="cms-cover-preview" role="img" aria-label="Preview cover image" style={{ backgroundImage: `url(${draft.image_url})` }}><span>Preview cover</span></div>}
+      </div>
       <div className="cms-locale-tabs" aria-label="Article translations">{locales.map(locale => <button type="button" className={activeLocale === locale.code ? "active" : ""} onClick={() => setActiveLocale(locale.code)} key={locale.code}>{locale.native_name}{draft.translations[locale.code]?.title ? " ✓" : ""}</button>)}</div>
       <div className="cms-language-heading"><span>{activeLocale.toUpperCase()}</span><strong>{activeLocaleInfo?.name || activeLocale} {activeLocale === "id" ? "· wajib" : "· optional"}</strong></div>
       <label>Title<input required={activeLocale === "id"} value={translation.title} onChange={event => updateTranslation("title", event.target.value)} placeholder={`Article title · ${activeLocaleInfo?.native_name || activeLocale}`} /></label>

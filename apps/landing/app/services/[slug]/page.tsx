@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { Footer } from "../../components/Footer";
 import { SiteHeader } from "../../components/SiteHeader";
 import { services, values } from "../../data";
@@ -18,16 +19,21 @@ export default async function ServiceDetail({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const service = services.find(item => item.slug === slug);
   if (!service) notFound();
+  const isInspection = service.slug === "inspection";
 
   return (
     <>
       <main className="overflow-hidden bg-[#f4f3ed] text-[#0b0d0c]">
         <section
-          className="relative flex min-h-[680px] items-end overflow-hidden bg-[#090b0a] text-white"
-          style={{ backgroundImage: `linear-gradient(90deg,rgba(7,9,8,.94) 0%,rgba(7,9,8,.72) 42%,rgba(7,9,8,.18) 100%),url(${service.image})`, backgroundPosition: "center", backgroundSize: "cover" }}
+          className={`relative flex min-h-[680px] items-end overflow-hidden bg-[#090b0a] text-white ${isInspection ? "inspection-service-hero" : ""}`}
+          style={isInspection ? undefined : { backgroundImage: `linear-gradient(90deg,rgba(7,9,8,.94) 0%,rgba(7,9,8,.72) 42%,rgba(7,9,8,.18) 100%),url(${service.image})`, backgroundPosition: "center", backgroundSize: "cover" }}
         >
           <SiteHeader dark />
-          <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-20 pt-52 md:px-8 md:pb-24 md:pt-60">
+          {isInspection && <div className="inspection-service-hero__gallery" aria-label="Dokumentasi pekerjaan inspeksi">
+            <figure><Image fill unoptimized sizes="(max-width: 767px) 50vw, 28vw" src="/images/revisi/services/inspection.webp" alt="Teknisi melakukan inspeksi di area atap" /></figure>
+            <figure><Image fill unoptimized sizes="(max-width: 767px) 50vw, 28vw" src="/images/revisi/services/inspection-2.webp" alt="Teknisi menyiapkan akses tali untuk pekerjaan inspeksi" /></figure>
+          </div>}
+          <div className={`relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-20 pt-52 md:px-8 md:pb-24 md:pt-60 ${isInspection ? "inspection-service-hero__content" : ""}`}>
             <SectionLabel light>{service.eyebrow}</SectionLabel>
             <h1 className="max-w-5xl font-[family-name:var(--font-display)] text-[clamp(64px,10vw,144px)] font-extrabold uppercase leading-[.78] tracking-[-.04em]">
               {service.title}
