@@ -177,18 +177,26 @@ const trainingNames: Record<string, LocalizedText> = {
   "tree-climbing": { id: "Pelatihan Tree Climbing", en: "Tree Climbing Training", zh: "树木攀爬培训", ja: "ツリークライミング訓練" },
 };
 
-const articleTranslations: Record<string, Pick<SeoPage, "title" | "description">> = {
+const articleTranslations: Record<string, Pick<SeoPage, "title" | "description" | "keywords">> = {
+  "panduan-maintenance-dan-kebersihan-gedung": {
+    title: { id: posts[0].title, en: posts[0].titleEn, zh: "建筑维护：清洁与保养指南", ja: "ビルメンテナンス：清掃と保守のガイド" },
+    description: { id: posts[0].excerpt, en: posts[0].excerptEn, zh: "安全选择办公室清洁、高层建筑清洁、建筑清洁服务和专业玻璃清洁的实用指南。", ja: "オフィス清掃、高層ビル清掃、建物清掃サービス、窓ガラス清掃を安全に選ぶための実践ガイドです。" },
+    keywords: {
+      id: ["maintenance gedung", "jasa kebersihan kantor", "pembersihan gedung tinggi", "jasa cleaning service gedung", "jasa cuci kaca gedung"],
+      en: ["building maintenance", "office cleaning services", "high-rise building cleaning", "building cleaning service", "commercial window cleaning"],
+    },
+  },
   "memilih-metode-akses-untuk-fasad": {
-    title: { id: posts[0].title, en: posts[0].titleEn, zh: "如何为外墙维护选择合适的作业方式", ja: "外壁メンテナンスに適したアクセス方法の選び方" },
-    description: { id: posts[0].excerpt, en: posts[0].excerptEn, zh: "绳索作业、吊篮还是脚手架？项目开始前应了解安全、工期和作业区域方面的考虑因素。", ja: "ロープアクセス、ゴンドラ、足場のどれを選ぶべきか。着工前に安全性、期間、作業範囲の要点を確認します。" },
+    title: { id: posts[1].title, en: posts[1].titleEn, zh: "如何为外墙维护选择合适的作业方式", ja: "外壁メンテナンスに適したアクセス方法の選び方" },
+    description: { id: posts[1].excerpt, en: posts[1].excerptEn, zh: "绳索作业、吊篮还是脚手架？项目开始前应了解安全、工期和作业区域方面的考虑因素。", ja: "ロープアクセス、ゴンドラ、足場のどれを選ぶべきか。着工前に安全性、期間、作業範囲の要点を確認します。" },
   },
   "persiapan-tim-rescue": {
-    title: { id: posts[1].title, en: posts[1].titleEn, zh: "高空作业团队必须准备的五件事", ja: "高所作業チームが準備すべき5つのこと" },
-    description: { id: posts[1].excerpt, en: posts[1].excerptEn, zh: "救援计划不是附属文件，而是每项高空作业中都必须落实的关键环节。", ja: "救助計画は単なる添付書類ではなく、あらゆる高所作業で実践される重要な要素です。" },
+    title: { id: posts[2].title, en: posts[2].titleEn, zh: "高空作业团队必须准备的五件事", ja: "高所作業チームが準備すべき5つのこと" },
+    description: { id: posts[2].excerpt, en: posts[2].excerptEn, zh: "救援计划不是附属文件，而是每项高空作业中都必须落实的关键环节。", ja: "救助計画は単なる添付書類ではなく、あらゆる高所作業で実践される重要な要素です。" },
   },
   "inspeksi-peralatan-harian": {
-    title: { id: posts[2].title, en: posts[2].titleEn, zh: "绳索作业设备每日检查清单", ja: "ロープアクセス機器の日常点検チェックリスト" },
-    description: { id: posts[2].excerpt, en: posts[2].excerptEn, zh: "持续进行简单检查，有助于避免使用损坏设备，并保持设备记录清晰完整。", ja: "簡単な点検を継続することで、破損機器の使用を防ぎ、機器記録を適切に管理できます。" },
+    title: { id: posts[3].title, en: posts[3].titleEn, zh: "绳索作业设备每日检查清单", ja: "ロープアクセス機器の日常点検チェックリスト" },
+    description: { id: posts[3].excerpt, en: posts[3].excerptEn, zh: "持续进行简单检查，有助于避免使用损坏设备，并保持设备记录清晰完整。", ja: "簡単な点検を継続することで、破損機器の使用を防ぎ、機器記録を適切に管理できます。" },
   },
 };
 
@@ -358,6 +366,7 @@ function postDate(slug: string, runtimeArticle?: RuntimeArticle) {
     return Number.isNaN(date.valueOf()) ? undefined : date.toISOString();
   }
   return ({
+    "panduan-maintenance-dan-kebersihan-gedung": "2026-08-13",
     "memilih-metode-akses-untuk-fasad": "2026-08-02",
     "persiapan-tim-rescue": "2026-07-18",
     "inspeksi-peralatan-harian": "2026-06-06",
@@ -430,7 +439,7 @@ function organizationNode(locale: SupportedLocale) {
     address: { "@type": "PostalAddress", addressLocality: "Yogyakarta", addressRegion: "Daerah Istimewa Yogyakarta", addressCountry: "ID" },
     areaServed: { "@type": "Country", name: "Indonesia" },
     contactPoint: { "@type": "ContactPoint", telephone: "+62 822-1040-1004", email: "contact@prorope.id", contactType: "customer service", availableLanguage: SUPPORTED_LOCALES.map(code => languageTags[code]) },
-    sameAs: ["https://www.instagram.com/prorope.services/"],
+    sameAs: ["https://www.instagram.com/prorope.id/"],
   };
 }
 

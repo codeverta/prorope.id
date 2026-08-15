@@ -9,7 +9,7 @@ export function Footer() {
         <div className="footer-intro">
           <Brand inverse />
           <p>Layanan Rope Access Profesional untuk pekerjaan vertikal yang aman, efisien, dan tersertifikasi.</p>
-          <a className="instagram-pill" href="https://www.instagram.com/prorope.services/" target="_blank" rel="noreferrer"><span>◎</span> @prorope.services ↗</a>
+          <a className="instagram-pill" href="https://www.instagram.com/prorope.id/" target="_blank" rel="noreferrer"><span>◎</span> @prorope.id ↗</a>
         </div>
         <div><h3>Services</h3>{services.slice(0, 5).map(s => <Link key={s.slug} href={`/services/${s.slug}`}>{s.title}</Link>)}</div>
         <div><h3>Training</h3>{trainings.map(t => <Link key={t.slug} href={`/training/${t.slug}`}>{t.code}</Link>)}<Link href="/training/schedule">Schedule</Link></div>

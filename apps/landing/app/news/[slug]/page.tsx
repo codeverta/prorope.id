@@ -35,7 +35,7 @@ export default async function Post({ params }: { params: Promise<{ slug: string 
   const livePost = await getPublishedPost(slug);
   if (!livePost && !fallback) notFound();
 
-  const initialPost = livePost || { slug, category: fallback!.category, image_url: fallback!.image, published_at: fallback!.date, translations: { id: { title: fallback!.title, excerpt: fallback!.excerpt }, en: { title: fallback!.titleEn, excerpt: fallback!.excerptEn } } };
+  const initialPost = livePost || { slug, category: fallback!.category, image_url: fallback!.image, published_at: fallback!.date, translations: { id: { title: fallback!.title, excerpt: fallback!.excerpt, body: fallback!.body }, en: { title: fallback!.titleEn, excerpt: fallback!.excerptEn, body: fallback!.bodyEn } } };
   const locale = normalizeLocale((await headers()).get("x-prorope-locale"));
   const needsRuntimeStructuredData = livePost && !fallback;
   return <>{needsRuntimeStructuredData && <StructuredData pathname={`/news/${slug}`} locale={locale} runtimeArticle={livePost} />}<NewsArticleContent slug={slug} initialPost={initialPost} /></>;

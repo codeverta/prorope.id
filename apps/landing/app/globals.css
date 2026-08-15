@@ -30,6 +30,7 @@
 .footer .brand__logo img{width:220px;height:220px;left:-48px;top:-36px}
 .footer{background:#2a2a2a}
 .button{color:var(--ink)}
+.button__icon{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .button--light{background:var(--orange);color:var(--ink)}
 .button--light:hover{background:var(--orange2)}
 .hero__image:after{background:linear-gradient(125deg,transparent 35%,rgba(255,209,0,.16))}
@@ -43,6 +44,7 @@
 .contact-band .lead-form input::placeholder,.contact-band .lead-form textarea::placeholder{color:rgba(11,13,12,.62)}
 .contact-band .lead-form .button{background:var(--ink);color:var(--orange)}
 .form-panel .lead-form .button{background:var(--orange);color:var(--ink)}
+.form-page--contact h1{font-size:clamp(58px,6.3vw,96px);line-height:.82;overflow-wrap:anywhere}
 .service-detail-card__image span,.project-grid article>div span,.admin-logo,.admin-brand>span{color:var(--ink)}
 .admin-stats article.accent{color:var(--ink)}
 .admin-logo{width:118px;height:145px;overflow:hidden;background:transparent;padding:0;margin-bottom:28px}
@@ -126,6 +128,7 @@
   .contact-band--simple h2{font-size:clamp(42px,12vw,52px);overflow-wrap:anywhere}
   .form-page__grid>*{min-width:0}
   .form-page h1{font-size:clamp(54px,16vw,70px);overflow-wrap:anywhere}
+  .form-page--contact h1{font-size:clamp(44px,12.5vw,58px)}
   .form-page__grid>div:first-child,.contact-details,.contact-details>*{min-width:0;max-width:100%}
   .contact-details a{overflow-wrap:anywhere}
   .form-panel{width:auto;min-width:0}

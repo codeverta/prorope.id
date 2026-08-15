@@ -28,7 +28,7 @@ const pairs: Pair[] = [
 
   ["Akses tali profesional · Yogyakarta", "Professional rope access · Yogyakarta"], ["JANGKAU", "REACH"], ["LEBIH JAUH", "BEYOND"], ["BATAS.", "LIMITS."],
   ["Pekerjaan vertikal yang aman, efisien, dan presisi—dari inspeksi hingga perawatan gedung.", "Safe, efficient, and precise vertical work—from inspection to building maintenance."],
-  ["Diskusikan proyek", "Discuss your project"], ["Jelajahi layanan", "Explore services"], ["Aman sejak perencanaan", "Safe by design"], ["Tim tersertifikasi", "Certified team"], ["Berbasis di Yogyakarta", "Based in Yogyakarta"], ["AMAN • EFISIEN • TERSERTIFIKASI", "SAFE • EFFICIENT • CERTIFIED"],
+  ["WhatsApp Sekarang", "WhatsApp Now"], ["Jelajahi layanan", "Explore services"], ["Aman sejak perencanaan", "Safe by design"], ["Tim tersertifikasi", "Certified team"], ["Berbasis di Yogyakarta", "Based in Yogyakarta"], ["AMAN • EFISIEN • TERSERTIFIKASI", "SAFE • EFFICIENT • CERTIFIED"],
   ["Siapa kami", "Who we are"], ["Solusi untuk tempat yang", "Solutions for places that are"], ["sulit dijangkau.", "hard to reach."],
   ["Pro Rope Services adalah tim profesional rope access untuk painting, glass cleaning, sealant, building maintenance, inspeksi, dan pekerjaan teknis di ketinggian.", "Pro Rope Services is a professional rope access team for painting, glass cleaning, sealant, building maintenance, inspection, and technical work at height."],
   ["Metode kami menjaga area kerja tetap ringkas, mobilisasi cepat, dan hasil dapat dipertanggungjawabkan.", "Our methods keep the work area compact, mobilization fast, and results accountable."], ["Tentang Pro Rope", "About Pro Rope"],

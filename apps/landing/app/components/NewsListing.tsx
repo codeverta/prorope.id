@@ -19,8 +19,8 @@ export type PublicPost = {
 const initialPosts: PublicPost[] = fallbackPosts.map(post => ({
   slug: post.slug, category: post.category, image_url: post.image, published_at: post.date,
   translations: {
-    id: { title: post.title, excerpt: post.excerpt },
-    en: { title: post.titleEn, excerpt: post.excerptEn },
+    id: { title: post.title, excerpt: post.excerpt, body: post.body },
+    en: { title: post.titleEn, excerpt: post.excerptEn, body: post.bodyEn },
     zh: { title: generatedTranslations[post.title]?.zh || post.titleEn, excerpt: generatedTranslations[post.excerpt]?.zh || post.excerptEn },
     ja: { title: generatedTranslations[post.title]?.ja || post.titleEn, excerpt: generatedTranslations[post.excerpt]?.ja || post.excerptEn },
   },

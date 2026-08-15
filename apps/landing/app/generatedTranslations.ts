@@ -147,9 +147,9 @@ export const generatedTranslations: Record<string, Record<string, string>> = {
     "zh": "安全、高效、精确的垂直工作——从检查到建筑维护。",
     "ja": "点検からビルメンテナンスまで、安全・効率的・正確な垂直作業を実現します。"
   },
-  "Diskusikan proyek": {
-    "zh": "讨论您的项目",
-    "ja": "プロジェクトについて話し合う"
+  "WhatsApp Sekarang": {
+    "zh": "立即使用 WhatsApp",
+    "ja": "今すぐWhatsApp"
   },
   "Jelajahi layanan": {
     "zh": "探索服务",
