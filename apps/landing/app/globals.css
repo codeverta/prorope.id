@@ -30,7 +30,7 @@
 .footer .brand__logo img{width:220px;height:220px;left:-48px;top:-36px}
 .footer{background:#2a2a2a}
 .button{color:var(--ink)}
-.button__icon{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.button__icon{width:18px;height:18px;flex:0 0 18px}
 .button--light{background:var(--orange);color:var(--ink)}
 .button--light:hover{background:var(--orange2)}
 .hero__image:after{background:linear-gradient(125deg,transparent 35%,rgba(255,209,0,.16))}
