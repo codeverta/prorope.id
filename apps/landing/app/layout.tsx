@@ -20,5 +20,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const requestHeaders = await headers();
   const locale = normalizeLocale(requestHeaders.get("x-prorope-locale"));
   const pathname = requestHeaders.get("x-prorope-pathname") || `/${locale}`;
-  return <html lang={languageTags[locale]}><body className={`${display.variable} ${sans.variable}`}><StructuredData pathname={pathname} locale={locale} /><LanguageProvider key={locale} initialLanguage={locale}><RouteTransition>{children}</RouteTransition></LanguageProvider></body></html>;
+  return <html lang={languageTags[locale]}><body className={`${display.variable} ${sans.variable}`}>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18407489612" />
+    <script id="google-ads-gtag" dangerouslySetInnerHTML={{ __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18407489612');` }} />
+    <StructuredData pathname={pathname} locale={locale} /><LanguageProvider key={locale} initialLanguage={locale}><RouteTransition>{children}</RouteTransition></LanguageProvider>
+  </body></html>;
 }

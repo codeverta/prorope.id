@@ -11,6 +11,7 @@ const generatedRouteDirectory = path.join(appDirectory, "sitemap.xml");
 const outputFile = path.join(generatedRouteDirectory, "route.ts");
 const legacyPublicFile = path.join(root, "public", "sitemap.xml");
 const excludedRoutes = new Set(["/admin"]);
+const contentLastModified = "2026-08-27";
 
 async function publishedCmsPosts() {
   const apiUrl = (process.env.SITEMAP_API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
@@ -30,8 +31,8 @@ async function publishedCmsPosts() {
 
 const cmsPostRoutes = await publishedCmsPosts();
 const dynamicRoutes = new Map([
-  ["/services/[slug]", services.map(({ slug }) => ({ path: `/services/${slug}` }))],
-  ["/training/[slug]", trainings.map(({ slug }) => ({ path: `/training/${slug}` }))],
+  ["/services/[slug]", services.map(({ slug }) => ({ path: `/services/${slug}`, lastModified: contentLastModified }))],
+  ["/training/[slug]", trainings.map(({ slug }) => ({ path: `/training/${slug}`, lastModified: contentLastModified }))],
   ["/news/[slug]", [...new Map([
     ...posts.map(({ slug, date }) => [`/news/${slug}`, { path: `/news/${slug}`, lastModified: toISODate(date) }]),
     ...cmsPostRoutes.map(route => [route.path, route]),
@@ -82,11 +83,22 @@ function expandRoutes(pageFiles) {
       if (!resolved) throw new Error(`Dynamic route ${route} has no sitemap resolver`);
       routes.push(...resolved);
     } else {
-      routes.push({ path: route });
+      routes.push({ path: route, lastModified: contentLastModified });
     }
   }
   return [...new Map(routes.map(route => [route.path, route])).values()]
     .sort((left, right) => left.path.localeCompare(right.path));
+}
+
+function assertCompleteSitemap(routes) {
+  const generatedPaths = new Set(routes.map(route => route.path));
+  const requiredPaths = [
+    ...services.map(({ slug }) => `/services/${slug}`),
+    ...trainings.map(({ slug }) => `/training/${slug}`),
+    ...posts.map(({ slug }) => `/news/${slug}`),
+  ];
+  const missingPaths = requiredPaths.filter(route => !generatedPaths.has(route));
+  if (missingPaths.length) throw new Error(`Sitemap is missing required routes: ${missingPaths.join(", ")}`);
 }
 
 function priorityFor(route) {
@@ -126,6 +138,7 @@ if (!/^https?:\/\/[^\s]+$/i.test(SITE_URL)) {
 }
 
 const routes = expandRoutes(await findPages());
+assertCompleteSitemap(routes);
 const entries = SUPPORTED_LOCALES.flatMap(locale => routes.map(route => renderEntry(locale, route)));
 const xml = [
   '<?xml version="1.0" encoding="UTF-8"?>',

@@ -30,7 +30,7 @@ export default async function TrainingDetail({ params }: { params: Promise<{ slu
   return (
     <>
       <main className="overflow-hidden bg-[#f4f3ed] text-[#0b0d0c]">
-        <PageHero eyebrow={`${training.code} training`} title={training.title.toUpperCase()} text={training.summary} image={trainingHeroImages[training.slug]} />
+        <PageHero eyebrow={`${training.code} training`} title={training.title.toUpperCase()} text={training.summary} image={trainingHeroImages[training.slug]} imageFit={training.slug === "tkpk" ? "contain" : "cover"} />
 
         <section className="py-20 md:py-28 lg:py-32">
           <div className="mx-auto grid w-full max-w-[1240px] gap-14 px-6 md:px-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,.85fr)] lg:gap-20">

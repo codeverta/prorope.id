@@ -1,10 +1,15 @@
 import { SiteHeader } from "./SiteHeader";
 
-export function PageHero({ eyebrow, title, text, image, index }: { eyebrow: string; title: string; text: string; image?: string; index?: string }) {
+export function PageHero({ eyebrow, title, text, image, index, imageFit = "cover" }: { eyebrow: string; title: string; text: string; image?: string; index?: string; imageFit?: "cover" | "contain" }) {
   return (
     <section
       className="relative flex min-h-[620px] items-end overflow-hidden bg-[#090b0a] bg-cover bg-center text-white md:min-h-[680px]"
-      style={{ backgroundImage: image ? `linear-gradient(90deg,rgba(7,9,8,.96) 0%,rgba(7,9,8,.75) 44%,rgba(7,9,8,.2) 100%),url(${image})` : "linear-gradient(135deg,#090b0a 0%,#242823 100%)" }}
+      style={{
+        backgroundImage: image ? `linear-gradient(90deg,rgba(7,9,8,.96) 0%,rgba(7,9,8,.75) 44%,rgba(7,9,8,.2) 100%),url(${image})` : "linear-gradient(135deg,#090b0a 0%,#242823 100%)",
+        backgroundSize: image ? (imageFit === "contain" ? "cover, contain" : "cover") : "cover",
+        backgroundPosition: imageFit === "contain" ? "center, right center" : "center",
+        backgroundRepeat: "no-repeat",
+      }}
     >
       <SiteHeader dark />
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-6 pb-16 pt-48 md:px-8 md:pb-24 md:pt-56">

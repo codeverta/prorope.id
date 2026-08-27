@@ -409,7 +409,7 @@ export function createMetadata(pathname: string, locale: SupportedLocale, runtim
     keywords: keywordsFor(clean, title, keywords, locale),
     alternates: { canonical, languages: { ...languages, "x-default": localizedPath(clean, "id") } },
     robots: indexable
-      ? { index: true, follow: true, nocache: false, googleBot: { index: true, follow: true, noimageindex: false, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } }
+      ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } }
       : { index: false, follow: false, noarchive: true, googleBot: { index: false, follow: false, noimageindex: true } },
     openGraph,
     twitter: { card: "summary_large_image", title: fullTitle, description, images: [{ url: imageUrl, alt: `${title} — ${SITE_NAME}` }] },
