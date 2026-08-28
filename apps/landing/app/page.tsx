@@ -5,6 +5,7 @@ import { ScrollReveal } from "./components/ScrollReveal";
 import { HeroCarousel } from "./components/HeroCarousel";
 import { HeroRope } from "./components/HeroRope";
 import { WhatsAppIcon } from "./components/WhatsAppIcon";
+import { WhatsAppLink } from "./components/WhatsAppLink";
 import { posts, projects, services, trainings, values } from "./data";
 
 export default function Home() {
@@ -19,7 +20,7 @@ export default function Home() {
           <p className="eyebrow eyebrow--light">Professional rope access · Yogyakarta</p>
           <h1 data-no-translate><em>BEYOND</em><br />DIFFICULT<br />ACCESS</h1>
           <p className="hero__lead">Pekerjaan vertikal yang aman, efisien, dan presisi—dari inspeksi hingga perawatan gedung.</p>
-          <div className="hero__actions"><a className="button" href="https://wa.me/6282210401004" target="_blank" rel="noreferrer">WhatsApp Sekarang <WhatsAppIcon width={16} height={16} className="button__icon" /></a><a className="text-link text-link--light" href="/services">Explore services <span>→</span></a></div>
+          <div className="hero__actions"><WhatsAppLink className="button" href="https://wa.me/6282210401004" target="_blank" rel="noreferrer">WhatsApp Sekarang <WhatsAppIcon width={16} height={16} className="button__icon" /></WhatsAppLink><a className="text-link text-link--light" href="/services">Explore services <span>→</span></a></div>
           <div className="hero__meta"><span><b>01</b> Safe by design</span><span><b>02</b> Certified team</span><span><b>03</b> Based in Yogyakarta</span></div>
         </div>
         <div className="hero__sidecopy">SAFE • EFFICIENT • CERTIFIED</div>

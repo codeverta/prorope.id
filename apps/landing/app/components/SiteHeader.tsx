@@ -5,6 +5,7 @@ import { AnchorHTMLAttributes, MouseEvent, ReactNode, useEffect, useRef, useStat
 import { LanguageSwitcher, useLanguage } from "./LanguageProvider";
 import { navigateWithTransition } from "./navigationTransition";
 import { WhatsAppIcon } from "./WhatsAppIcon";
+import { WhatsAppLink } from "./WhatsAppLink";
 
 const serviceNav = [
   { label: "Inspection", href: "/services/inspection", note: "Visual & technical assessment" },
@@ -105,10 +106,10 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
       <div className="header-topbar">
         <div className="shell header-topbar__inner">
           <div className="header-contact-links">
-            <a href="https://wa.me/6282210401004" target="_blank" rel="noreferrer" aria-label="WhatsApp Faris di +62 822-1040-1004">
+            <WhatsAppLink href="https://wa.me/6282210401004" target="_blank" rel="noreferrer" aria-label="WhatsApp Faris di +62 822-1040-1004">
               <WhatsAppIcon width={13} height={13} />
               <span>+62 822-1040-1004 <small>(Faris)</small></span>
-            </a>
+            </WhatsAppLink>
             <a href="mailto:contact@prorope.id" aria-label="Email contact@prorope.id">
               <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>
               <span>contact@prorope.id</span>
@@ -150,7 +151,7 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
           <ClientLink className={active("/projects") ? "is-active" : ""} href={href("/projects")} onClick={closeAll}>Projects</ClientLink>
           <ClientLink className={active("/news", true) ? "is-active" : ""} href={href("/news")} onClick={closeAll}>News</ClientLink>
           <LanguageSwitcher onSelect={closeAll} />
-          <a className="button button--small" href="https://wa.me/6282210401004" target="_blank" rel="noreferrer" onClick={closeAll}>WhatsApp Sekarang <WhatsAppIcon width={15} height={15} /></a>
+          <WhatsAppLink className="button button--small" href="https://wa.me/6282210401004" target="_blank" rel="noreferrer" onClick={closeAll}>WhatsApp Sekarang <WhatsAppIcon width={15} height={15} /></WhatsAppLink>
         </nav>
       </div>
     </header>
