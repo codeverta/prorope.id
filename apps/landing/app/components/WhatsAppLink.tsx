@@ -13,12 +13,22 @@ declare global {
 
 export function trackWhatsAppConversion() {
   if (typeof window === "undefined") return;
-  const conversion = { send_to: CONVERSION_SEND_TO };
+
+  const conversion = {
+    send_to: CONVERSION_SEND_TO,
+    event_category: "engagement",
+    event_label: "whatsapp_click",
+  };
+
   if (typeof window.gtag === "function") {
     window.gtag("event", "conversion", conversion);
-  } else {
-    window.dataLayer?.push(["event", "conversion", conversion]);
+    return;
   }
+
+  // Keep a real GTM custom event as a fallback while gtag.js is loading.
+  // Pushing an array here is not reliably recognized by GTM as a custom event.
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: "conversion", ...conversion });
 }
 
 export function WhatsAppLink({ children, onClick, ...props }: AnchorHTMLAttributes<HTMLAnchorElement> & { children: ReactNode }) {

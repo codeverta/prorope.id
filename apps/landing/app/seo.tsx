@@ -44,7 +44,7 @@ const pages: Record<string, SeoPage> = {
   "/": {
     kind: "home",
     image: "/og.png",
-    title: { id: "Jasa Rope Access Profesional Yogyakarta", en: "Professional Rope Access Services in Indonesia", zh: "印度尼西亚专业绳索作业服务", ja: "インドネシアのプロフェッショナルロープアクセス" },
+    title: { id: "Jasa Rope Access Profesional di Yogyakarta", en: "Professional Rope Access Services in Indonesia", zh: "印度尼西亚专业绳索作业服务", ja: "インドネシアのプロフェッショナルロープアクセス" },
     description: homeDescription,
   },
   "/about": {
@@ -201,7 +201,7 @@ const articleTranslations: Record<string, Pick<SeoPage, "title" | "description" 
 };
 
 const baseKeywords: LocalizedKeywords = {
-  id: ["jasa rope access", "rope access Yogyakarta", "kerja di ketinggian", "akses tali profesional", "Pro Rope"],
+  id: ["jasa rope access", "jasa rope access profesional di Yogyakarta", "rope access Yogyakarta", "kerja di ketinggian", "akses tali profesional", "Pro Rope"],
   en: ["rope access Indonesia", "rope access Yogyakarta", "work at height", "professional rope access", "Pro Rope"],
   zh: ["印度尼西亚绳索作业", "日惹绳索作业", "高空作业", "专业绳索技术", "Pro Rope"],
   ja: ["インドネシア ロープアクセス", "ジョグジャカルタ ロープアクセス", "高所作業", "プロ ロープアクセス", "Pro Rope"],
@@ -376,7 +376,9 @@ function postDate(slug: string, runtimeArticle?: RuntimeArticle) {
 export function createMetadata(pathname: string, locale: SupportedLocale, runtimeArticle?: RuntimeArticle): Metadata {
   const { title, description, clean, image, kind, keywords } = getPageSeo(pathname, locale, runtimeArticle);
   const canonical = localizedPath(clean, locale);
-  const fullTitle = clean === "/" ? `${SITE_NAME} | ${title}` : `${title} | ${SITE_NAME}`;
+  // Put the homepage's descriptive query first so search engines have a clear
+  // long-tail title to use, while retaining the Pro Rope brand identifier.
+  const fullTitle = `${title} | ${SITE_NAME}`;
   const languages = Object.fromEntries(SUPPORTED_LOCALES.map(code => [languageTags[code], localizedPath(clean, code)]));
   const otherLocales = SUPPORTED_LOCALES.filter(code => code !== locale).map(code => localeTags[code]);
   const imageUrl = absoluteUrl(image);

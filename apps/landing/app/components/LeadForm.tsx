@@ -17,6 +17,13 @@ export function LeadForm({ compact = false, kind = "quote" }: { compact?: boolea
       const endpoint = kind === "training" ? "/api/v1/registrations" : "/api/v1/leads";
       const response = await fetch(`${API_URL}${endpoint}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       if (!response.ok) throw new Error("Request failed");
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "lead_form_submit",
+          lead_type: kind,
+        });
+      }
       setStatus("success");
       event.currentTarget.reset();
     } catch {
