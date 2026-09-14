@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Footer } from "./Footer";
 import { PageHero } from "./PageHero";
 import type { PublicPost } from "./NewsListing";
@@ -10,14 +10,32 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 type ArticlePost = PublicPost;
 
 function ArticleBody({ body }: { body: string }) {
-  const blocks = body.split(/\n\s*\n/).map(block => block.trim()).filter(Boolean);
+  // CMS payloads may contain escaped newlines ("\\n") instead of actual
+  // line breaks. Normalize both forms before splitting markdown blocks.
+  const normalizedBody = body.replace(/\\r?\\n/g, "\n");
+  const renderInline = (value: string): ReactNode[] => {
+    const nodes: ReactNode[] = [];
+    const pattern = /(\*\*([^*]+)\*\*|__([^_]+)__|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|\*([^*]+)\*|_([^_]+)_)/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(value))) {
+      if (match.index > lastIndex) nodes.push(value.slice(lastIndex, match.index));
+      if (match[2] || match[3]) nodes.push(<strong key={`${match.index}-strong`}>{match[2] || match[3]}</strong>);
+      else if (match[4] && match[5]) nodes.push(<a key={`${match.index}-link`} href={match[5]} target="_blank" rel="noreferrer">{match[4]}</a>);
+      else nodes.push(<em key={`${match.index}-em`}>{match[6] || match[7]}</em>);
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < value.length) nodes.push(value.slice(lastIndex));
+    return nodes;
+  };
+  const blocks = normalizedBody.split(/\n\s*\n/).map(block => block.trim()).filter(Boolean);
   return <>{blocks.map((block, index) => {
-    if (block.startsWith("### ")) return <h3 key={index}>{block.slice(4)}</h3>;
-    if (block.startsWith("## ")) return <h2 key={index}>{block.slice(3)}</h2>;
-    if (block.startsWith("> ")) return <blockquote key={index}>{block.slice(2)}</blockquote>;
+    if (block.startsWith("### ")) return <h3 key={index}>{renderInline(block.slice(4))}</h3>;
+    if (block.startsWith("## ")) return <h2 key={index}>{renderInline(block.slice(3))}</h2>;
+    if (block.startsWith("> ")) return <blockquote key={index}>{renderInline(block.slice(2))}</blockquote>;
     const lines = block.split("\n");
-    if (lines.every(line => line.startsWith("- "))) return <ul key={index}>{lines.map(line => <li key={line}>{line.slice(2)}</li>)}</ul>;
-    return <p key={index}>{block}</p>;
+    if (lines.every(line => line.startsWith("- "))) return <ul key={index}>{lines.map((line, lineIndex) => <li key={lineIndex}>{renderInline(line.slice(2))}</li>)}</ul>;
+    return <p key={index}>{lines.map((line, lineIndex) => <span key={lineIndex}>{lineIndex > 0 && <br />}{renderInline(line)}</span>)}</p>;
   })}</>;
 }
 
