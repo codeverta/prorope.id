@@ -1,6 +1,3 @@
-import { headers } from "next/headers";
-import { normalizeLocale } from "./seo";
-import { IndonesianHome } from "./components/IndonesianHome";
 import { Footer } from "./components/Footer";
 import { LeadForm } from "./components/LeadForm";
 import { SiteHeader } from "./components/SiteHeader";
@@ -11,10 +8,7 @@ import { WhatsAppIcon } from "./components/WhatsAppIcon";
 import { WhatsAppLink } from "./components/WhatsAppLink";
 import { posts, projects, services, trainings, values } from "./data";
 
-export default async function Home() {
-  const locale = normalizeLocale((await headers()).get("x-prorope-locale"));
-  if (locale === "id") return <IndonesianHome />;
-
+export default function Home() {
   return <>
     <ScrollReveal />
     <main data-scroll-reveal-root>
