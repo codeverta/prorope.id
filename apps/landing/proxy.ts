@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES } from "./app/site-config";
+import { DEFAULT_LOCALE, SITE_URL, SUPPORTED_LOCALES } from "./app/site-config";
 
 const supportedLocales = new Set<string>(SUPPORTED_LOCALES);
 const PUBLIC_FILE_PATTERN = /\.[^/]+$/;
@@ -7,6 +7,18 @@ const RESERVED_PATHS = ["/_next", "/_vinext", "/api", "/admin"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const currentUrl = request.nextUrl;
+  const canonicalHost = new URL(SITE_URL).hostname.toLowerCase().replace(/^www\./, "");
+  const requestHost = currentUrl.hostname.toLowerCase();
+  const isSiteHost = requestHost === canonicalHost || requestHost === `www.${canonicalHost}`;
+
+  if (isSiteHost && (requestHost !== canonicalHost || currentUrl.protocol !== "https:")) {
+    const canonicalUrl = currentUrl.clone();
+    canonicalUrl.protocol = "https:";
+    canonicalUrl.hostname = canonicalHost;
+    canonicalUrl.port = "";
+    return NextResponse.redirect(canonicalUrl, 308);
+  }
 
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     const headers = new Headers(request.headers);

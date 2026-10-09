@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useLanguage } from "./LanguageProvider";
+import { collectAnalyticsContext } from "./analytics-context";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -22,6 +23,8 @@ export function LeadForm({ compact = false, kind = "quote" }: { compact?: boolea
         window.dataLayer.push({
           event: "lead_form_submit",
           lead_type: kind,
+          lead_status: "server_accepted",
+          ...collectAnalyticsContext(),
         });
       }
       setStatus("success");

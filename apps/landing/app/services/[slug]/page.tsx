@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import Image from "next/image";
 import { Footer } from "../../components/Footer";
+import { IndonesianServicePage } from "../../components/IndonesianServicePage";
 import { SiteHeader } from "../../components/SiteHeader";
+import { normalizeLocale } from "../../seo";
 import { services, values } from "../../data";
 
 export function generateStaticParams() { return services.map(service => ({ slug: service.slug })); }
@@ -19,6 +22,10 @@ export default async function ServiceDetail({ params }: { params: Promise<{ slug
   const { slug } = await params;
   const service = services.find(item => item.slug === slug);
   if (!service) notFound();
+  const locale = normalizeLocale((await headers()).get("x-prorope-locale"));
+  if (locale === "id" && (slug === "painting-blasting" || slug === "rope-access")) {
+    return <IndonesianServicePage slug={slug} />;
+  }
   const isInspection = service.slug === "inspection";
 
   return (

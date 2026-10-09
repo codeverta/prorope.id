@@ -8,21 +8,22 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
 import { WhatsAppLink } from "./WhatsAppLink";
 
 const serviceNav = [
-  { label: "Inspection", href: "/services/inspection", note: "Visual & technical assessment" },
-  { label: "Cleaning", href: "/services/cleaning", note: "Glass, facade & difficult access" },
-  { label: "Maintenance", href: "/services/maintenance", note: "Sealant, leak & facade repair" },
-  { label: "Painting & Blasting", href: "/services/painting-blasting", note: "Surface protection & coating" },
-  { label: "Equipment Supplier", href: "/products", note: "Professional access & rescue gear" },
+  { label: "Inspeksi", labelEn: "Inspection", href: "/services/inspection", note: "Penilaian visual dan teknis", noteEn: "Visual & technical assessment" },
+  { label: "Pembersihan", labelEn: "Cleaning", href: "/services/cleaning", note: "Kaca, fasad, dan akses sulit", noteEn: "Glass, facade & difficult access" },
+  { label: "Perawatan gedung", labelEn: "Maintenance", href: "/services/maintenance", note: "Sealant, kebocoran, dan fasad", noteEn: "Sealant, leak & facade repair" },
+  { label: "Pengecatan gedung", labelEn: "Building Painting", href: "/services/painting-blasting", note: "Pengecatan dan coating protektif", noteEn: "Painting & protective coating" },
+  { label: "Rope access", labelEn: "Rope Access", href: "/services/rope-access", note: "Pekerjaan akses tali di Yogyakarta", noteEn: "Rope access services in Yogyakarta" },
+  { label: "Pemasok peralatan", labelEn: "Equipment Supplier", href: "/products", note: "Peralatan akses dan rescue", noteEn: "Professional access & rescue gear" },
 ];
 
 const trainingNav = [
-  { label: "Schedule", href: "/training/schedule", note: "Upcoming 2026 batches" },
-  { label: "TKPK", href: "/training/tkpk", note: "Tenaga Kerja Pada Ketinggian" },
-  { label: "TKBT", href: "/training/tkbt", note: "Teknisi Akses Tali" },
-  { label: "Confined Space", href: "/training/confined-space", note: "Entry, work & rescue" },
-  { label: "Rescue Training", href: "/training/rescue-training", note: "High-angle team rescue" },
-  { label: "Tree Climbing", href: "/training/tree-climbing", note: "Arborist access & positioning" },
-  { label: "Registration", href: "/training/registration", note: "Register your interest" },
+  { label: "Jadwal", labelEn: "Schedule", href: "/training/schedule", note: "Batch mendatang 2026", noteEn: "Upcoming 2026 batches" },
+  { label: "TKPK", labelEn: "TKPK", href: "/training/tkpk", note: "Tenaga Kerja Pada Ketinggian", noteEn: "Work at Height Worker" },
+  { label: "TKBT", labelEn: "TKBT", href: "/training/tkbt", note: "Teknisi Akses Tali", noteEn: "Rope Access Technician" },
+  { label: "Confined Space", labelEn: "Confined Space", href: "/training/confined-space", note: "Masuk, bekerja, dan rescue", noteEn: "Entry, work & rescue" },
+  { label: "Pelatihan Rescue", labelEn: "Rescue Training", href: "/training/rescue-training", note: "Rescue tim sudut tinggi", noteEn: "High-angle team rescue" },
+  { label: "Tree Climbing", labelEn: "Tree Climbing", href: "/training/tree-climbing", note: "Akses dan positioning arborist", noteEn: "Arborist access & positioning" },
+  { label: "Pendaftaran", labelEn: "Registration", href: "/training/registration", note: "Daftarkan minat Anda", noteEn: "Register your interest" },
 ];
 
 function withoutLocale(pathname: string) {
@@ -56,7 +57,7 @@ export function Brand({ inverse = false }: { inverse?: boolean }) {
 }
 
 export function SiteHeader({ dark = false }: { dark?: boolean }) {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const pathname = withoutLocale(usePathname());
   const [open, setOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<"services" | "training" | null>(null);
@@ -125,31 +126,31 @@ export function SiteHeader({ dark = false }: { dark?: boolean }) {
         <button className="menu-button" aria-label="Buka menu" aria-expanded={open} onClick={() => { setHidden(false); setOpen(!open); }}><span /><span /></button>
         <nav className={`main-nav ${open ? "is-open" : ""}`} aria-label="Navigasi utama">
           <ClientLink className={active("/") ? "is-active" : ""} href={href("/")} onClick={closeAll}>Beranda</ClientLink>
-          <ClientLink className={active("/about") ? "is-active" : ""} href={href("/about")} onClick={closeAll}>About</ClientLink>
+          <ClientLink className={active("/about") ? "is-active" : ""} href={href("/about")} onClick={closeAll}>{t("Tentang", "About")}</ClientLink>
           <div className={`nav-group ${active("/services", true) ? "is-active" : ""} ${openDropdown === "services" ? "is-open" : ""}`} onMouseEnter={() => { if (canHover()) showDropdown("services"); }} onMouseLeave={() => { if (canHover()) hideDropdown("services"); }}>
             <div className="nav-group__trigger">
-              <ClientLink href={href("/services")} onClick={closeAll}>Services</ClientLink>
-              <button aria-label="Buka menu Services" aria-expanded={openDropdown === "services"} aria-controls="services-dropdown" onClick={() => setOpenDropdown(openDropdown === "services" ? null : "services")}><span aria-hidden="true" /></button>
+              <ClientLink href={href("/services")} onClick={closeAll}>{t("Layanan", "Services")}</ClientLink>
+              <button aria-label={t("Buka menu layanan", "Open services menu")} aria-expanded={openDropdown === "services"} aria-controls="services-dropdown" onClick={() => setOpenDropdown(openDropdown === "services" ? null : "services")}><span aria-hidden="true" /></button>
             </div>
             <div className="nav-dropdown" id="services-dropdown">
-              <div className="nav-dropdown__head"><span>01</span><div><strong>Our Services</strong><small>Work safely at every height.</small></div></div>
-              {serviceNav.map((item, index) => <ClientLink className={active(item.href) ? "is-active" : ""} key={item.href} href={href(item.href)} onClick={closeAll}><span>0{index + 1}</span><div><strong>{item.label}</strong><small>{item.note}</small></div><i>↗</i></ClientLink>)}
-              <ClientLink className="nav-dropdown__all" href={href("/services")} onClick={closeAll}>Explore all services <span>→</span></ClientLink>
+              <div className="nav-dropdown__head"><span>01</span><div><strong>{t("Layanan kami", "Our Services")}</strong><small>{t("Bekerja aman di setiap ketinggian.", "Work safely at every height.")}</small></div></div>
+              {serviceNav.map((item, index) => <ClientLink className={active(item.href) ? "is-active" : ""} key={item.href} href={href(item.href)} onClick={closeAll}><span>0{index + 1}</span><div><strong>{t(item.label, item.labelEn)}</strong><small>{t(item.note, item.noteEn)}</small></div><i>↗</i></ClientLink>)}
+              <ClientLink className="nav-dropdown__all" href={href("/services")} onClick={closeAll}>{t("Jelajahi semua layanan", "Explore all services")} <span>→</span></ClientLink>
             </div>
           </div>
           <div className={`nav-group nav-group--training ${active("/training", true) ? "is-active" : ""} ${openDropdown === "training" ? "is-open" : ""}`} onMouseEnter={() => { if (canHover()) showDropdown("training"); }} onMouseLeave={() => { if (canHover()) hideDropdown("training"); }}>
             <div className="nav-group__trigger">
-              <ClientLink href={href("/training")} onClick={closeAll}>Training</ClientLink>
-              <button aria-label="Buka menu Training" aria-expanded={openDropdown === "training"} aria-controls="training-dropdown" onClick={() => setOpenDropdown(openDropdown === "training" ? null : "training")}><span aria-hidden="true" /></button>
+              <ClientLink href={href("/training")} onClick={closeAll}>{t("Pelatihan", "Training")}</ClientLink>
+              <button aria-label={t("Buka menu pelatihan", "Open training menu")} aria-expanded={openDropdown === "training"} aria-controls="training-dropdown" onClick={() => setOpenDropdown(openDropdown === "training" ? null : "training")}><span aria-hidden="true" /></button>
             </div>
             <div className="nav-dropdown nav-dropdown--training" id="training-dropdown">
-              <div className="nav-dropdown__head"><span>02</span><div><strong>Training Academy</strong><small>Competence for the real world.</small></div></div>
-              {trainingNav.map((item, index) => <ClientLink className={active(item.href) ? "is-active" : ""} key={item.href} href={href(item.href)} onClick={closeAll}><span>0{index + 1}</span><div><strong>{item.label}</strong><small>{item.note}</small></div><i>↗</i></ClientLink>)}
-              <ClientLink className="nav-dropdown__all" href={href("/training")} onClick={closeAll}>Explore all programs <span>→</span></ClientLink>
+              <div className="nav-dropdown__head"><span>02</span><div><strong>{t("Akademi Pelatihan", "Training Academy")}</strong><small>{t("Kompetensi untuk dunia nyata.", "Competence for the real world.")}</small></div></div>
+              {trainingNav.map((item, index) => <ClientLink className={active(item.href) ? "is-active" : ""} key={item.href} href={href(item.href)} onClick={closeAll}><span>0{index + 1}</span><div><strong>{t(item.label, item.labelEn)}</strong><small>{t(item.note, item.noteEn)}</small></div><i>↗</i></ClientLink>)}
+              <ClientLink className="nav-dropdown__all" href={href("/training")} onClick={closeAll}>{t("Jelajahi semua program", "Explore all programs")} <span>→</span></ClientLink>
             </div>
           </div>
-          <ClientLink className={active("/projects") ? "is-active" : ""} href={href("/projects")} onClick={closeAll}>Projects</ClientLink>
-          <ClientLink className={active("/news", true) ? "is-active" : ""} href={href("/news")} onClick={closeAll}>News</ClientLink>
+          <ClientLink className={active("/projects") ? "is-active" : ""} href={href("/projects")} onClick={closeAll}>{t("Proyek", "Projects")}</ClientLink>
+          <ClientLink className={active("/news", true) ? "is-active" : ""} href={href("/news")} onClick={closeAll}>{t("Berita", "News")}</ClientLink>
           <LanguageSwitcher onSelect={closeAll} />
           <WhatsAppLink className="button button--small" href="https://wa.me/6282210401004" target="_blank" rel="noreferrer" onClick={closeAll}>WhatsApp Sekarang <WhatsAppIcon width={15} height={15} /></WhatsAppLink>
         </nav>

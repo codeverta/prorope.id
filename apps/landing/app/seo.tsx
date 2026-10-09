@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { posts, productCategories, projects, schedules, services, trainings } from "./data";
+import { indonesianServiceContent } from "./indonesian-service-content";
 import { trainingHeroImages, trainingLandingImage, trainingScheduleImage } from "./media";
 import { languageTags, SITE_URL, SUPPORTED_LOCALES, type SupportedLocale } from "./site-config";
 
@@ -23,6 +24,7 @@ export type RuntimeArticle = {
   category: string;
   image_url: string;
   published_at: string;
+  updated_at?: string;
   translations: Record<string, { title: string; excerpt: string; body?: string }>;
 };
 
@@ -165,7 +167,8 @@ const serviceNames: Record<string, LocalizedText> = {
   inspection: { id: "Jasa Inspeksi Rope Access", en: "Rope Access Inspection", zh: "绳索作业检查服务", ja: "ロープアクセス点検" },
   cleaning: { id: "Jasa Pembersihan Gedung Tinggi", en: "High-Rise Building Cleaning", zh: "高层建筑清洁", ja: "高層ビル清掃" },
   maintenance: { id: "Jasa Perawatan Gedung", en: "Building Maintenance", zh: "建筑维护服务", ja: "ビルメンテナンス" },
-  "painting-blasting": { id: "Jasa Pengecatan & Blasting", en: "Painting & Blasting", zh: "涂装与喷砂服务", ja: "塗装・ブラストサービス" },
+  "painting-blasting": { id: "Jasa Pengecatan Gedung di Jogja", en: "Building Painting & Surface Preparation", zh: "建筑涂装与表面处理", ja: "建物塗装・素地調整" },
+  "rope-access": { id: "Jasa Rope Access Jogja & Yogyakarta", en: "Rope Access Services in Yogyakarta", zh: "日惹绳索作业服务", ja: "ジョグジャカルタのロープアクセスサービス" },
   "equipment-supplier": { id: "Peralatan Rope Access", en: "Rope Access Equipment", zh: "绳索作业装备", ja: "ロープアクセス装備" },
 };
 
@@ -189,6 +192,11 @@ const articleTranslations: Record<string, Pick<SeoPage, "title" | "description" 
   "memilih-metode-akses-untuk-fasad": {
     title: { id: posts[1].title, en: posts[1].titleEn, zh: "如何为外墙维护选择合适的作业方式", ja: "外壁メンテナンスに適したアクセス方法の選び方" },
     description: { id: posts[1].excerpt, en: posts[1].excerptEn, zh: "绳索作业、吊篮还是脚手架？项目开始前应了解安全、工期和作业区域方面的考虑因素。", ja: "ロープアクセス、ゴンドラ、足場のどれを選ぶべきか。着工前に安全性、期間、作業範囲の要点を確認します。" },
+  },
+  "biaya-pengecatan-gedung-faktor-penawaran": {
+    title: { id: posts.find(post => post.slug === "biaya-pengecatan-gedung-faktor-penawaran")!.title, en: posts.find(post => post.slug === "biaya-pengecatan-gedung-faktor-penawaran")!.titleEn, zh: "建筑涂装报价的影响因素", ja: "建物塗装の見積りに影響する要素" },
+    description: { id: posts.find(post => post.slug === "biaya-pengecatan-gedung-faktor-penawaran")!.excerpt, en: posts.find(post => post.slug === "biaya-pengecatan-gedung-faktor-penawaran")!.excerptEn, zh: "了解面积、表面状况、涂料规格和作业方式如何影响建筑涂装报价。", ja: "面積、素地の状態、塗料仕様、作業方法が建物塗装の見積りに与える影響を解説します。" },
+    keywords: { id: ["biaya pengecatan gedung", "harga pengecatan fasad", "penawaran pengecatan gedung Jogja"], en: ["building painting cost", "facade painting quote", "building painting estimate"] },
   },
   "persiapan-tim-rescue": {
     title: { id: posts[2].title, en: posts[2].titleEn, zh: "高空作业团队必须准备的五件事", ja: "高所作業チームが準備すべき5つのこと" },
@@ -276,6 +284,7 @@ function englishServiceDescription(slug: string) {
     cleaning: "Fast, low-disruption glass and facade cleaning for high-rise buildings using professional rope access methods.",
     maintenance: "Rope access maintenance for facade sealant, leaks, cladding, lighting, and exterior building components.",
     "painting-blasting": "Surface preparation, protective painting, and coating for industrial assets and buildings in difficult-to-reach areas.",
+    "rope-access": "Site-assessed rope access for facade cleaning, painting, maintenance, and inspection in difficult-to-reach areas.",
     "equipment-supplier": "Professional rope access, rescue, and work-at-height equipment selected for your team's operational needs.",
   } as Record<string, string>)[slug];
 }
@@ -290,11 +299,22 @@ function dynamicPage(pathname: string): SeoPage | undefined {
       image: socialImage(service.image),
       title: serviceNames[slug],
       description: {
-        id: service.summary,
+        id: indonesianServiceContent[slug]?.metaDescription || service.summary,
         en: englishServiceDescription(slug),
         zh: `Pro Rope 在印度尼西亚提供专业的${serviceNames[slug].zh}，适用于建筑、工业设施和难以到达的区域。`,
         ja: `Pro Ropeはインドネシアで、建物・産業施設・アクセス困難な場所に対応する${serviceNames[slug].ja}を提供します。`,
       },
+      keywords: slug === "painting-blasting"
+        ? {
+          id: ["jasa pengecatan gedung Jogja", "jasa cat gedung Yogyakarta", "pengecatan fasad gedung", "pengecatan eksterior gedung"],
+          en: ["building painting Yogyakarta", "facade painting", "exterior building painting"],
+        }
+        : slug === "rope-access"
+          ? {
+            id: ["jasa rope access Jogja", "jasa rope access Yogyakarta", "jasa akses tali", "jasa rope access terdekat"],
+            en: ["rope access Yogyakarta", "rope access services", "work at height"],
+          }
+          : undefined,
     };
   }
   if (section === "training" && slug && slug !== "schedule" && slug !== "registration") {
@@ -360,17 +380,52 @@ function absoluteUrl(value: string) {
   return new URL(value, SITE_URL).toString();
 }
 
+function dateTimestamp(value: string) {
+  const normalized = value.trim();
+  const isoDate = normalized.match(/^(\d{4}-\d{2}-\d{2})$/);
+  if (isoDate) return `${isoDate[1]}T00:00:00.000Z`;
+  const sqlTimestamp = normalized.match(/^(\d{4}-\d{2}-\d{2})[ T](\d{2}:\d{2}:\d{2}(?:\.\d+)?)$/);
+  if (sqlTimestamp) return `${sqlTimestamp[1]}T${sqlTimestamp[2]}Z`;
+  const editorialDate = normalized.match(/^(\d{1,2})\s+([A-Za-z]{3,9})\s+(\d{4})$/);
+  if (editorialDate) {
+    const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    const month = months.indexOf(editorialDate[2].slice(0, 3).toLowerCase()) + 1;
+    if (month > 0) return `${editorialDate[3]}-${String(month).padStart(2, "0")}-${editorialDate[1].padStart(2, "0")}T00:00:00.000Z`;
+  }
+  const date = new Date(normalized);
+  return Number.isNaN(date.valueOf()) ? undefined : date.toISOString();
+}
+
 function postDate(slug: string, runtimeArticle?: RuntimeArticle) {
   if (runtimeArticle?.slug === slug && runtimeArticle.published_at) {
-    const date = new Date(runtimeArticle.published_at);
-    return Number.isNaN(date.valueOf()) ? undefined : date.toISOString();
+    return dateTimestamp(runtimeArticle.published_at);
   }
-  return ({
-    "panduan-maintenance-dan-kebersihan-gedung": "2026-08-13",
-    "memilih-metode-akses-untuk-fasad": "2026-08-02",
-    "persiapan-tim-rescue": "2026-07-18",
-    "inspeksi-peralatan-harian": "2026-06-06",
-  } as Record<string, string>)[slug];
+  const post = posts.find(item => item.slug === slug);
+  return post ? dateTimestamp(post.date) : undefined;
+}
+
+function postModifiedDate(slug: string, runtimeArticle?: RuntimeArticle) {
+  if (runtimeArticle?.slug === slug && (runtimeArticle.updated_at || runtimeArticle.published_at)) {
+    return dateTimestamp(runtimeArticle.updated_at || runtimeArticle.published_at) || postDate(slug, runtimeArticle);
+  }
+  const post = posts.find(item => item.slug === slug);
+  return (post ? dateTimestamp(post.updatedAt || post.date) : undefined) || postDate(slug, runtimeArticle);
+}
+
+function translatedLocalesForPage(clean: string, runtimeArticle?: RuntimeArticle): SupportedLocale[] {
+  if (clean === "/" || clean === "/services/painting-blasting" || clean === "/services/rope-access") return ["id", "en"];
+  if (clean === "/news") return ["id", "en"];
+  if (clean.startsWith("/news/")) {
+    if (runtimeArticle) {
+      return SUPPORTED_LOCALES.filter(code => {
+        const translation = runtimeArticle.translations[code];
+        return translation?.title?.trim() && translation?.excerpt?.trim() && translation?.body?.trim();
+      });
+    }
+    const post = posts.find(item => clean === `/news/${item.slug}`);
+    return post ? ["id", ...(post.body && post.bodyEn ? ["en" as const] : [])] : [];
+  }
+  return ["en"];
 }
 
 export function createMetadata(pathname: string, locale: SupportedLocale, runtimeArticle?: RuntimeArticle): Metadata {
@@ -379,8 +434,9 @@ export function createMetadata(pathname: string, locale: SupportedLocale, runtim
   // Put the homepage's descriptive query first so search engines have a clear
   // long-tail title to use, while retaining the Pro Rope brand identifier.
   const fullTitle = `${title} | ${SITE_NAME}`;
-  const languages = Object.fromEntries(SUPPORTED_LOCALES.map(code => [languageTags[code], localizedPath(clean, code)]));
-  const otherLocales = SUPPORTED_LOCALES.filter(code => code !== locale).map(code => localeTags[code]);
+  const availableLocales = translatedLocalesForPage(clean, runtimeArticle);
+  const languages = Object.fromEntries(availableLocales.map(code => [languageTags[code], localizedPath(clean, code)]));
+  const otherLocales = availableLocales.filter(code => code !== locale).map(code => localeTags[code]);
   const imageUrl = absoluteUrl(image);
   const slug = clean.split("/").at(-1) || "";
   const publishedTime = kind === "article" ? postDate(slug, runtimeArticle) : undefined;
@@ -395,7 +451,7 @@ export function createMetadata(pathname: string, locale: SupportedLocale, runtim
     title: fullTitle,
     description,
     images: [{ url: imageUrl, alt: `${title} — ${SITE_NAME}` }],
-    ...(kind === "article" ? { publishedTime, modifiedTime: publishedTime, authors: [SITE_NAME], section: runtimeArticle?.category || posts.find(post => post.slug === slug)?.category } : {}),
+    ...(kind === "article" ? { publishedTime, modifiedTime: postModifiedDate(slug, runtimeArticle), authors: [SITE_NAME], section: runtimeArticle?.category || posts.find(post => post.slug === slug)?.category } : {}),
   };
 
   return {
@@ -409,7 +465,7 @@ export function createMetadata(pathname: string, locale: SupportedLocale, runtim
     category: "Rope access services and work-at-height training",
     classification: "Professional rope access services",
     keywords: keywordsFor(clean, title, keywords, locale),
-    alternates: { canonical, languages: { ...languages, "x-default": localizedPath(clean, "id") } },
+    alternates: { canonical, languages: { ...languages, ...(availableLocales.includes("id") ? { "x-default": localizedPath(clean, "id") } : {}) } },
     robots: indexable
       ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } }
       : { index: false, follow: false, noarchive: true, googleBot: { index: false, follow: false, noimageindex: true } },
@@ -475,7 +531,10 @@ function entityForPage(clean: string, locale: SupportedLocale, title: string, de
     return {
       "@type": "Service", "@id": `${pageUrl}#service`, name: title, description, url: pageUrl,
       image: absoluteUrl(socialImage(service.image)), serviceType: serviceNames[slug][locale], provider: { "@id": organizationId },
-      areaServed: { "@type": "Country", name: "Indonesia" }, audience: { "@type": "Audience", audienceType: "Building owners, facility managers, and industrial operators" },
+      areaServed: slug === "painting-blasting" || slug === "rope-access"
+        ? { "@type": "AdministrativeArea", name: "Yogyakarta, Daerah Istimewa Yogyakarta" }
+        : { "@type": "Country", name: "Indonesia" },
+      audience: { "@type": "Audience", audienceType: "Building owners, facility managers, and industrial operators" },
     };
   }
   if (section === "training" && slug && !["schedule", "registration"].includes(slug)) {
@@ -493,10 +552,27 @@ function entityForPage(clean: string, locale: SupportedLocale, title: string, de
     if (!post && !livePost) return undefined;
     return {
       "@type": "Article", "@id": `${pageUrl}#article`, headline: title, description, url: pageUrl, mainEntityOfPage: { "@id": `${pageUrl}#webpage` },
-      image: [absoluteUrl(socialImage(livePost?.image_url || post?.image || "/og.png"))], datePublished: postDate(slug, livePost), dateModified: postDate(slug, livePost), articleSection: livePost?.category || post?.category,
+      image: [absoluteUrl(socialImage(livePost?.image_url || post?.image || "/og.png"))], datePublished: postDate(slug, livePost), dateModified: postModifiedDate(slug, livePost), articleSection: livePost?.category || post?.category,
       inLanguage: languageTags[locale], author: { "@id": organizationId }, publisher: { "@id": organizationId },
     };
   }
+}
+
+function serviceFaqForPage(clean: string, locale: SupportedLocale) {
+  if (locale !== "id") return undefined;
+  const [, section, slug] = clean.match(/^\/([^/]+)(?:\/([^/]+))?/) || [];
+  if (section !== "services" || !slug) return undefined;
+  const faqs = indonesianServiceContent[slug]?.faqs;
+  if (!faqs?.length) return undefined;
+  return {
+    "@type": "FAQPage",
+    "@id": `${absoluteUrl(localizedPath(clean, locale))}#faq`,
+    mainEntity: faqs.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  };
 }
 
 function itemListForPage(clean: string, locale: SupportedLocale, pageUrl: string) {
@@ -529,6 +605,7 @@ export function createStructuredData(pathname: string, locale: SupportedLocale, 
   const pageUrl = absoluteUrl(localizedPath(clean, locale));
   const breadcrumb = breadcrumbNode(clean, locale, title, pageUrl);
   const entity = entityForPage(clean, locale, title, description, pageUrl, runtimeArticle);
+  const faq = serviceFaqForPage(clean, locale);
   const itemList = itemListForPage(clean, locale, pageUrl);
   const events = clean === "/training/schedule" ? scheduleEvents(locale) : [];
   const graph: Array<Record<string, unknown>> = [
@@ -544,12 +621,14 @@ export function createStructuredData(pathname: string, locale: SupportedLocale, 
   };
   if (breadcrumb) pageNode.breadcrumb = { "@id": `${pageUrl}#breadcrumb` };
   if (entity) pageNode.mainEntity = { "@id": entity["@id"] };
+  if (faq) pageNode.hasPart = { "@id": faq["@id"] };
   if (itemList) pageNode.mainEntity = { "@id": itemList["@id"] };
   if (kind === "home" || kind === "about" || kind === "contact") pageNode.mainEntity = { "@id": organizationId };
   if (events.length) pageNode.mainEntity = events.map(event => ({ "@id": event["@id"] }));
   if (kind === "registration") pageNode.potentialAction = { "@type": "RegisterAction", target: pageUrl };
   graph.push(pageNode);
   if (entity) graph.push(entity);
+  if (faq) graph.push(faq);
   if (itemList) graph.push(itemList);
   graph.push(...events);
 

@@ -45,6 +45,7 @@ type postRecord struct {
 	ImageURL     string                     `json:"image_url"`
 	Published    bool                       `json:"published"`
 	PublishedAt  string                     `json:"published_at"`
+	UpdatedAt    string                     `json:"updated_at"`
 	Translations map[string]postTranslation `json:"translations"`
 }
 
@@ -238,7 +239,7 @@ func (s *Server) publicProjects(w http.ResponseWriter, _ *http.Request) {
 	s.query(w, "SELECT id,slug,title,category,location,project_year,image_url,featured FROM projects WHERE published=1 ORDER BY project_year DESC,id DESC")
 }
 func (s *Server) publicPosts(w http.ResponseWriter, _ *http.Request) {
-	posts, err := s.posts(`SELECT id,slug,category,COALESCE(image_url,''),published,published_at FROM posts WHERE published=1 ORDER BY published_at DESC`)
+	posts, err := s.posts(`SELECT id,slug,category,COALESCE(image_url,''),published,published_at,updated_at FROM posts WHERE published=1 ORDER BY published_at DESC`)
 	if err != nil {
 		jsonResponse(w, http.StatusInternalServerError, apiError{"query failed"})
 		return
@@ -246,7 +247,7 @@ func (s *Server) publicPosts(w http.ResponseWriter, _ *http.Request) {
 	jsonResponse(w, http.StatusOK, posts)
 }
 func (s *Server) publicPost(w http.ResponseWriter, r *http.Request) {
-	posts, err := s.posts(`SELECT id,slug,category,COALESCE(image_url,''),published,published_at FROM posts WHERE slug=? AND published=1`, r.PathValue("slug"))
+	posts, err := s.posts(`SELECT id,slug,category,COALESCE(image_url,''),published,published_at,updated_at FROM posts WHERE slug=? AND published=1`, r.PathValue("slug"))
 	if err == nil && len(posts) == 0 {
 		jsonResponse(w, http.StatusNotFound, apiError{"post not found"})
 		return
@@ -357,7 +358,7 @@ func (s *Server) adminSummary(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (s *Server) adminPosts(w http.ResponseWriter, _ *http.Request) {
-	posts, err := s.posts(`SELECT id,slug,category,COALESCE(image_url,''),published,published_at FROM posts ORDER BY updated_at DESC`)
+	posts, err := s.posts(`SELECT id,slug,category,COALESCE(image_url,''),published,published_at,updated_at FROM posts ORDER BY updated_at DESC`)
 	if err != nil {
 		jsonResponse(w, http.StatusInternalServerError, apiError{"query failed"})
 		return
@@ -375,7 +376,7 @@ func (s *Server) posts(query string, args ...any) ([]postRecord, error) {
 	for rows.Next() {
 		var post postRecord
 		var published int
-		if err := rows.Scan(&post.ID, &post.Slug, &post.Category, &post.ImageURL, &published, &post.PublishedAt); err != nil {
+		if err := rows.Scan(&post.ID, &post.Slug, &post.Category, &post.ImageURL, &published, &post.PublishedAt, &post.UpdatedAt); err != nil {
 			return nil, err
 		}
 		post.Published = published == 1

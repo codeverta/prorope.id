@@ -13,11 +13,12 @@ export type PublicPost = {
   category: string;
   image_url?: string;
   published_at?: string;
+  updated_at?: string;
   translations: Record<string, { title: string; excerpt: string; body?: string }>;
 };
 
 const initialPosts: PublicPost[] = fallbackPosts.map(post => ({
-  slug: post.slug, category: post.category, image_url: post.image, published_at: post.date,
+  slug: post.slug, category: post.category, image_url: post.image, published_at: post.date, updated_at: post.updatedAt,
   translations: {
     id: { title: post.title, excerpt: post.excerpt, body: post.body },
     en: { title: post.titleEn, excerpt: post.excerptEn, body: post.bodyEn },
@@ -25,6 +26,27 @@ const initialPosts: PublicPost[] = fallbackPosts.map(post => ({
     ja: { title: generatedTranslations[post.title]?.ja || post.titleEn, excerpt: generatedTranslations[post.excerpt]?.ja || post.excerptEn },
   },
 }));
+
+function mergePublishedPosts(livePosts: PublicPost[]): PublicPost[] {
+  const fallbackBySlug = new Map(initialPosts.map(post => [post.slug, post]));
+  const resolvedLive = livePosts.map(livePost => {
+    const fallback = fallbackBySlug.get(livePost.slug);
+    if (!fallback?.updated_at) return livePost;
+    const localModified = Date.parse(fallback.updated_at);
+    const cmsModified = Date.parse(livePost.updated_at || livePost.published_at || "");
+    if (!Number.isFinite(localModified) || (Number.isFinite(cmsModified) && cmsModified >= localModified)) return livePost;
+    return {
+      ...livePost,
+      category: fallback.category,
+      image_url: fallback.image_url,
+      published_at: fallback.published_at,
+      updated_at: fallback.updated_at,
+      translations: { ...livePost.translations, ...fallback.translations },
+    };
+  });
+  const liveSlugs = new Set(livePosts.map(post => post.slug));
+  return [...resolvedLive, ...initialPosts.filter(post => !liveSlugs.has(post.slug))];
+}
 
 function imageFor(post: PublicPost, index: number) { return post.image_url || fallbackPosts[index % fallbackPosts.length].image; }
 function dateFor(value: string | undefined, language: string) { if (!value) return language === "id" ? "Catatan Lapangan" : "Field Note"; const parsed = new Date(value); const locale = language === "id" ? "id-ID" : language === "zh" ? "zh-CN" : language === "ja" ? "ja-JP" : "en-GB"; return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString(locale, { day: "2-digit", month: "short", year: "numeric" }); }
@@ -35,7 +57,7 @@ export function NewsListing() {
   const [live, setLive] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/v1/posts`).then(response => response.ok ? response.json() : Promise.reject()).then((data: PublicPost[]) => { setPosts(data); setLive(true); }).catch(() => setLive(false));
+    fetch(`${API_URL}/api/v1/posts`).then(response => response.ok ? response.json() : Promise.reject()).then((data: PublicPost[]) => { setPosts(mergePublishedPosts(data)); setLive(true); }).catch(() => setLive(false));
   }, []);
 
   if (!posts.length) return <div className="shell news-empty"><span>◎</span><h2>Belum ada artikel.</h2><p>Artikel yang dipublikasikan dari admin akan tampil di sini.</p></div>;

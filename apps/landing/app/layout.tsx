@@ -35,6 +35,7 @@ window.gtag('config', 'AW-18407489612');` }} />
     </head>
     <body className={`${display.variable} ${sans.variable}`}>
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KFG7KT54" height="0" width="0" style={{ display: "none", visibility: "hidden" }} /></noscript>
-    <StructuredData pathname={pathname} locale={locale} /><LanguageProvider key={locale} initialLanguage={locale}><RouteTransition>{children}</RouteTransition></LanguageProvider>
+    {!pathname.startsWith(`/${locale}/news/`) && <StructuredData pathname={pathname} locale={locale} />}
+    <LanguageProvider key={locale} initialLanguage={locale}><RouteTransition>{children}</RouteTransition></LanguageProvider>
   </body></html>;
 }

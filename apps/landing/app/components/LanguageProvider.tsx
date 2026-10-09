@@ -4,6 +4,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import { useRouter } from "next/navigation";
 import { generatedTranslations } from "../generatedTranslations";
 import { navigateWithTransition } from "./navigationTransition";
+import { initializeAnalyticsSession } from "./analytics-context";
 
 export type Language = string;
 export type Locale = { code: string; name: string; native_name: string };
@@ -146,6 +147,7 @@ export function LanguageProvider({ children, initialLanguage = "id" }: { childre
   }, [router]);
 
   useEffect(() => {
+    initializeAnalyticsSession();
     localStorage.setItem("prorope_language", initialLanguage);
     fetch(`${API_URL}/api/v1/locales`).then(response => response.ok ? response.json() : Promise.reject()).then((data: Locale[]) => { if (data.length) setLocales(data); }).catch(() => undefined);
   }, [initialLanguage]);

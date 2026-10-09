@@ -29,6 +29,7 @@ export type Training = {
 export type Post = {
   slug: string;
   date: string;
+  updatedAt?: string;
   category: string;
   title: string;
   titleEn: string;
@@ -91,6 +92,19 @@ export const services: Service[] = [
     applications: ["Tower dan struktur baja", "Tank, stack, dan pipe support", "Fasad serta elemen arsitektural", "Area korosi lokal yang sulit diakses"],
     deliverables: ["Surface condition assessment", "Persiapan dan cleanliness check", "Aplikasi coating sesuai spesifikasi", "Dry film/visual check dan report"],
     assurance: "Kontrol debu, overspray, cuaca, dan kompatibilitas coating direncanakan sebelum pekerjaan dimulai untuk menjaga keselamatan dan mutu lapisan.",
+  },
+  {
+    slug: "rope-access",
+    title: "Rope Access Yogyakarta",
+    eyebrow: "Akses tali di Yogyakarta",
+    summary: "Metode akses tali untuk pembersihan, pengecatan, perawatan, dan inspeksi area tinggi setelah kelayakan lokasi dinilai.",
+    description: "Setiap pekerjaan akses tali direncanakan berdasarkan kondisi bangunan, anchor, risiko di area bawah, aktivitas lokasi, kompetensi personel, dan kebutuhan penyelamatan.",
+    icon: "↕",
+    image: "/images/revisi/home/why-rope-access.webp",
+    capabilities: ["Akses dan positioning pada area tinggi", "Pembersihan fasad dan kaca", "Pengecatan dan perawatan eksterior", "Inspeksi visual dan dokumentasi"],
+    applications: ["Fasad gedung dan area sulit dijangkau", "Pekerjaan pengecatan atau coating", "Perawatan sealant dan komponen eksterior", "Inspeksi visual setelah lingkup dikonfirmasi"],
+    deliverables: ["Survei kondisi lokasi dan akses", "Metode kerja serta pengendalian risiko", "Perlindungan area dan koordinasi pekerjaan", "Pemeriksaan serta dokumentasi hasil sesuai lingkup"],
+    assurance: "Akses tali hanya dipilih jika anchor, jalur kerja, personel, pengendalian area, kondisi cuaca, dan rescue plan dapat dinilai sesuai untuk pekerjaan tersebut.",
   },
   {
     slug: "equipment-supplier",
@@ -176,12 +190,12 @@ export const trainings: Training[] = [
 ];
 
 export const projects = [
-  { title: "Glass & Facade Cleaning", category: "Cleaning", location: "Bekasi", year: "2026", image: "/images/revisi/home/glass-facade-cleaning-bekasi.webp" },
-  { title: "Facade Sealant Replacement", category: "Maintenance", location: "Solo Grand Mall", year: "2026", image: "/images/revisi/home/facade-sealant-solo-grand-mall.webp" },
-  { title: "Sticker Removal", category: "Cleaning", location: "BPJS Kebumen", year: "2026", image: "/images/revisi/home/sticker-cleaning-bpjs-kebumen.webp" },
-  { title: "Fortuna Building Painting", category: "Painting", location: "Jember", year: "2026", image: "/images/revisi/home/painting-fortuna-jember.webp" },
-  { title: "Tower Protective Coating", category: "Painting", location: "East Java", year: "2025", image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85" },
-  { title: "Roof & Gutter Maintenance", category: "Maintenance", location: "Solo", year: "2024", image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=85" },
+  { slug: "glass-facade-cleaning-bekasi", title: "Glass & Facade Cleaning", category: "Cleaning", location: "Bekasi", year: "2026", image: "/images/revisi/home/glass-facade-cleaning-bekasi.webp" },
+  { slug: "facade-sealant-replacement", title: "Facade Sealant Replacement", category: "Maintenance", location: "Solo Grand Mall", year: "2026", image: "/images/revisi/home/facade-sealant-solo-grand-mall.webp" },
+  { slug: "sticker-removal-bpjs-kebumen", title: "Sticker Removal", category: "Cleaning", location: "BPJS Kebumen", year: "2026", image: "/images/revisi/home/sticker-cleaning-bpjs-kebumen.webp" },
+  { slug: "painting-fortuna-jember", title: "Fortuna Building Painting", category: "Painting", location: "Jember", year: "2026", image: "/images/revisi/home/painting-fortuna-jember.webp" },
+  { slug: "tower-protective-coating", title: "Tower Protective Coating", category: "Painting", location: "East Java", year: "2025", image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=85" },
+  { slug: "roof-gutter-maintenance", title: "Roof & Gutter Maintenance", category: "Maintenance", location: "Solo", year: "2024", image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1200&q=85" },
 ];
 
 export const productCategories = [
@@ -326,9 +340,138 @@ Cleaning also creates an opportunity to observe the building at close range. Tec
 
 Pro Rope supports glass and facade cleaning, inspection, and maintenance in difficult-to-reach areas using access methods suited to site conditions. Discuss your building requirements with our team so the scope, work method, risk controls, and result documentation can be planned from the start.`,
   },
-  { slug: "memilih-metode-akses-untuk-fasad", date: "02 Aug 2026", category: "Insight", title: "Memilih metode akses yang tepat untuk perawatan fasad", titleEn: "Choosing the right access method for facade maintenance", excerpt: "Rope access, gondola, atau scaffolding? Kenali pertimbangan keselamatan, waktu, dan area kerja sebelum proyek dimulai.", excerptEn: "Rope access, gondola, or scaffolding? Understand the safety, timing, and work-area considerations before a project begins.", image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1200&q=85" },
+  {
+    slug: "memilih-metode-akses-untuk-fasad",
+    date: "02 Aug 2026",
+    updatedAt: "2026-10-09",
+    category: "Pengecatan gedung",
+    title: "Rope Access atau Scaffolding untuk Pengecatan Gedung?",
+    titleEn: "Rope Access or Scaffolding for Building Painting?",
+    excerpt: "Bandingkan akses tali, scaffolding, gondola, dan lift kerja berdasarkan luas cat, akses, anchor, durasi, dan risiko lokasi.",
+    excerptEn: "Compare rope access, scaffolding, gondolas, and lifts by surface area, access, anchors, duration, and site risk.",
+    image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1200&q=85",
+    body: `Tidak ada satu metode akses yang selalu paling cepat, murah, atau aman untuk semua pekerjaan pengecatan gedung. Pilihan harus mengikuti luas dan bentuk fasad, kondisi permukaan, durasi, titik kerja, operasional di bawah, serta risiko yang dapat dikendalikan.
+
+# Pertimbangan akses untuk proyek pengecatan gedung
+
+## Kapan akses tali dapat dipertimbangkan?
+
+Rope access dapat dipertimbangkan ketika titik kerja berada di elevasi, ruang mobilisasi peralatan dari tanah terbatas, dan survei menunjukkan anchor serta jalur kerja dapat digunakan dengan aman. Untuk pengecatan lokal atau sejumlah zona yang tersebar, metode ini dapat mengurangi kebutuhan membangun platform di seluruh sisi bangunan. Itu bukan jaminan bahwa total waktu atau biaya pasti lebih rendah.
+
+Sebelum digunakan, tim perlu memahami anchor, tepi tajam, perubahan arah tali, perlindungan benda jatuh, pembatasan area di bawah, cuaca, akses penyelamatan, dan kecocokan metode dengan pekerjaan pengecatan. Jika faktor penting tidak dapat dipastikan, akses tali tidak seharusnya dipaksakan.
+
+## Kapan scaffolding mungkin lebih sesuai?
+
+Scaffolding dapat menyediakan platform kerja berkelanjutan untuk permukaan luas, pekerjaan berulang, atau kegiatan yang membutuhkan material dan alat berada di dekat bidang kerja. Pertimbangannya meliputi ruang pemasangan, kapasitas dan desain sistem, kondisi tanah atau tumpuan, akses penghuni, durasi pemasangan serta pembongkaran, dan perlindungan dari gangguan di sekitar.
+
+Scaffolding bukan otomatis lebih aman maupun lebih murah. Pemasangan dan penggunaannya tetap memerlukan perencanaan, personel yang kompeten, inspeksi, pengamanan tepi, serta pengendalian area.
+
+## Bandingkan lingkup yang sama
+
+Gondola, mobile elevating work platform, atau kombinasi metode juga mungkin relevan. Untuk membandingkan penawaran, pastikan setiap opsi mencakup zona cat, persiapan permukaan, spesifikasi bahan, jam kerja, pengamanan area bawah, mobilisasi, pemeriksaan mutu, dan dokumentasi yang sebanding.
+
+Keputusan akhir memerlukan informasi tentang tinggi dan bentuk bangunan, kondisi permukaan, kemungkinan akses kendaraan, titik anchor, aktivitas di sekitar, cuaca, serta berapa lama titik kerja perlu dijangkau. Di Yogyakarta maupun di kota lain, kondisi aktual lokasi tetap menjadi dasar pemilihan metode.
+
+Pro Rope berbasis di Yogyakarta. Kirim foto, alamat proyek, perkiraan area, jenis permukaan, dan target waktu agar lingkup awal dapat dibahas. Lihat layanan [rope access](/id/services/rope-access) dan [pengecatan gedung](/id/services/painting-blasting); metode serta penawaran akan dikonfirmasi setelah kebutuhan dan kondisi lokasi ditinjau.`,
+    bodyEn: `No single access method is always the fastest, cheapest, or safest choice for every building-painting project. The decision should reflect facade area and geometry, surface condition, duration, work locations, activity below, and risks that can be controlled.
+
+# Access considerations for building painting
+
+## When might rope access be considered?
+
+Rope access may be considered for elevated work when ground-level mobilisation is limited and a survey confirms usable anchors and a suitable work route. It can reduce the need to build a platform along an entire facade for localized painting or separated work zones, but that does not guarantee a lower total cost or shorter duration.
+
+The survey should consider anchors, sharp edges, rope deviations, dropped-object controls, exclusion zones, weather, rescue access, and whether the method suits the painting task. Rope access should not be forced when a critical condition cannot be verified.
+
+## When might scaffolding be more suitable?
+
+Scaffolding can provide a continuous platform for broad surfaces, repeat work, or tasks that need tools and materials close to the work face. Its planning should account for installation space, system design and capacity, ground or support conditions, building access, setup and dismantling time, and protection from surrounding activity.
+
+Scaffolding is not automatically safer or cheaper. Planning, competent personnel, inspection, edge protection, and area controls remain necessary.
+
+## Compare equivalent scopes
+
+Gondolas, mobile elevating work platforms, or a combination may also fit. For a fair comparison, align the painted zones, surface preparation, coating specification, work hours, controls below, mobilisation, quality checks, and documentation.
+
+The final decision needs information about building height and shape, surface condition, vehicle access, anchors, surrounding activity, weather, and repeat access. Site conditions—not the city name—determine the method.
+
+Pro Rope is based in Yogyakarta. Share photos, the project address, approximate area, surface type, and target timing to discuss the initial scope. See our [rope access](/en/services/rope-access) and [building painting](/en/services/painting-blasting) services; the method and quote are confirmed after the requirements and site are reviewed.`,
+  },
   { slug: "persiapan-tim-rescue", date: "18 Jul 2026", category: "Safety", title: "Lima hal yang harus siap sebelum tim bekerja di ketinggian", titleEn: "Five things to prepare before a team works at height", excerpt: "Perencanaan rescue bukan dokumen pelengkap. Ini adalah bagian aktif dari setiap pekerjaan vertikal.", excerptEn: "A rescue plan is not a supporting document. It is an active part of every vertical job.", image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=1200&q=85" },
   { slug: "inspeksi-peralatan-harian", date: "06 Jun 2026", category: "Equipment", title: "Checklist inspeksi harian peralatan rope access", titleEn: "Daily rope access equipment inspection checklist", excerpt: "Pemeriksaan sederhana yang konsisten membantu mencegah penggunaan alat rusak dan menjaga catatan peralatan tetap rapi.", excerptEn: "Simple, consistent checks help prevent damaged equipment from being used and keep equipment records organized.", image: "https://images.unsplash.com/photo-1516592673884-4a382d1124c2?auto=format&fit=crop&w=1200&q=85" },
+  {
+    slug: "biaya-pengecatan-gedung-faktor-penawaran",
+    date: "09 Oct 2026",
+    updatedAt: "2026-10-09",
+    category: "Pengecatan gedung",
+    title: "Biaya Pengecatan Gedung: Faktor yang Menentukan Penawaran",
+    titleEn: "Building Painting Cost: What Shapes a Quote",
+    excerpt: "Kenali pengaruh kondisi permukaan, persiapan, spesifikasi cat, akses, pengamanan, dan jadwal sebelum meminta penawaran pengecatan gedung.",
+    excerptEn: "Understand how surface condition, preparation, coating specifications, access, controls, and timing shape a building-painting quote.",
+    image: "/images/revisi/home/painting-fortuna-jember.webp",
+    body: `Biaya pengecatan gedung tidak dapat ditentukan hanya dari tinggi bangunan atau harga per meter persegi. Dua fasad dengan luas serupa bisa membutuhkan waktu, persiapan, bahan, akses, dan pengamanan yang berbeda. Penawaran yang bertanggung jawab dimulai dari lingkup kerja dan kondisi lokasi yang jelas.
+
+# Faktor yang memengaruhi biaya pengecatan gedung
+
+## Faktor utama dalam penawaran
+
+- Luas, bentuk, dan pembagian zona: banyaknya bidang, sudut, balkon, lis, atau detail dapat memengaruhi volume dan urutan kerja.
+- Kondisi permukaan: cat mengelupas, retak, kotoran, korosi, kelembapan, dan lapisan lama dapat menambah kebutuhan pemeriksaan atau persiapan.
+- Sistem bahan: jenis substrat, primer, cat atau coating, jumlah lapisan, warna, dan spesifikasi yang disetujui menentukan bahan serta proses aplikasi.
+- Metode akses: rope access, scaffolding, gondola, lift kerja, atau kombinasi dipilih setelah akses, anchor, ruang mobilisasi, dan risiko ditinjau.
+- Pengamanan dan koordinasi: penghuni, lalu lintas, kendaraan, jendela kerja, pencegahan debu atau overspray, serta kebutuhan izin dapat memengaruhi rencana.
+- Jadwal dan mutu: batas waktu, jam kerja, cuaca, mobilisasi, pemeriksaan hasil, dan dokumentasi juga masuk dalam perhitungan.
+
+## Informasi yang membantu survei awal
+
+Untuk meminta pembahasan awal, siapkan:
+
+1. Alamat atau titik lokasi gedung.
+2. Foto fasad dari beberapa sudut dan perkiraan luas atau jumlah bidang.
+3. Jenis permukaan, kondisi cat saat ini, serta bagian yang ingin dikerjakan.
+4. Akses yang tersedia, target waktu, dan area yang tetap beroperasi.
+
+Data ini membantu menyusun pertanyaan dan kebutuhan survei; foto saja belum tentu cukup untuk memastikan anchor atau kondisi tersembunyi.
+
+Sebelum menyetujui penawaran, periksa apakah batas pekerjaan, persiapan, bahan, jumlah lapisan, perlindungan area, pemeriksaan mutu, pengecualian, dan dokumentasi sudah dijelaskan. Perbaikan retak atau kerusakan struktural sebaiknya dipisahkan dan dikonfirmasi sebagai lingkup tersendiri bila diperlukan.
+
+## Mengapa tidak mencantumkan tarif umum?
+
+Angka tanpa survei mudah menyesatkan karena belum memperhitungkan akses, kondisi lapangan, dan spesifikasi. Tidak ada harga per meter persegi yang dapat diterapkan ke semua gedung. Mintalah penawaran berdasarkan proyek, lalu bandingkan lingkup yang setara—bukan hanya angka akhirnya.
+
+Pro Rope berbasis di Yogyakarta. Untuk membahas [jasa pengecatan gedung di Jogja](/id/services/painting-blasting), kirim lokasi, foto, permukaan, perkiraan area, dan jadwal yang diharapkan. Tim akan mengonfirmasi apakah survei atau informasi tambahan dibutuhkan sebelum menyusun penawaran.`,
+    bodyEn: `Building painting cost cannot be determined from height or a per-square-metre rate alone. Two facades of similar size may need different preparation, materials, access, controls, and working time. A responsible quote starts with a clear scope and site conditions.
+
+# Factors that shape a building-painting quote
+
+## Main factors in a quote
+
+- Area, shape, and work zones: the number of elevations, corners, balconies, trims, and details affects quantities and sequencing.
+- Surface condition: peeling paint, cracks, contamination, corrosion, moisture, and old coatings may require additional checks or preparation.
+- Coating system: substrate, primer, paint or coating, coat count, colour, and approved specification determine materials and application steps.
+- Access method: rope access, scaffolding, gondola, a work platform, or a combination should follow a review of access, anchors, mobilisation space, and risks.
+- Protection and coordination: occupants, traffic, vehicles, work windows, dust or overspray controls, and permits may change the plan.
+- Timing and quality: deadlines, allowed hours, weather, mobilisation, inspection, and documentation also affect the estimate.
+
+## Information that helps an initial review
+
+For an initial discussion, prepare:
+
+1. The building address or map location.
+2. Facade photos from several angles and an approximate area or number of sections.
+3. The surface type, current paint condition, and requested work zones.
+4. Available access, target timing, and areas that must remain operational.
+
+This helps identify survey needs; photographs alone may not confirm anchors or hidden conditions.
+
+Before accepting a quote, check that scope limits, preparation, materials, coat count, area protection, quality checks, exclusions, and documentation are clear. Structural repairs should be confirmed as a separate scope if needed.
+
+## Why not publish one general rate?
+
+A number without a site review can mislead because access, site conditions, and specifications vary. No per-square-metre price applies to every building. Request a project-specific quote and compare equivalent scopes, not only the final number.
+
+Pro Rope is based in Yogyakarta. To discuss [building painting in Jogja](/en/services/painting-blasting), share the location, photos, surface, approximate area, and target schedule. The team will confirm whether a survey or more information is needed before preparing a quote.`,
+  },
 ];
 
 export const schedules = [

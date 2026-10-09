@@ -1,6 +1,7 @@
 "use client";
 
 import { AnchorHTMLAttributes, MouseEvent, ReactNode } from "react";
+import { collectAnalyticsContext } from "./analytics-context";
 
 const CONVERSION_SEND_TO = "AW-18407489612/wfqhCNzjv-kcEMyAsMIE";
 
@@ -11,13 +12,17 @@ declare global {
   }
 }
 
-export function trackWhatsAppConversion() {
+export function trackWhatsAppConversion(destination?: string) {
   if (typeof window === "undefined") return;
+  let destinationHost = "wa.me";
+  try { destinationHost = destination ? new URL(destination).host : destinationHost; } catch { /* Keep the safe default host label. */ }
 
   const conversion = {
     send_to: CONVERSION_SEND_TO,
     event_category: "engagement",
     event_label: "whatsapp_click",
+    destination_host: destinationHost,
+    ...collectAnalyticsContext(),
   };
 
   if (typeof window.gtag === "function") {
@@ -34,7 +39,7 @@ export function trackWhatsAppConversion() {
 export function WhatsAppLink({ children, onClick, ...props }: AnchorHTMLAttributes<HTMLAnchorElement> & { children: ReactNode }) {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
-    if (!event.defaultPrevented) trackWhatsAppConversion();
+    if (!event.defaultPrevented) trackWhatsAppConversion(event.currentTarget.href);
   };
 
   return <a {...props} onClick={handleClick}>{children}</a>;

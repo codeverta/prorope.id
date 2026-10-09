@@ -1,91 +1,88 @@
 import assert from "node:assert/strict";
-import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
-const developmentPreviewMeta =
-  /<meta(?=[^>]*\bname=["']codex-preview["'])(?=[^>]*\bcontent=["']development["'])[^>]*>/i;
-const templateRoot = new URL("../", import.meta.url);
-const previewRoot = new URL("../app/_sites-preview/", import.meta.url);
+const workerUrl = new URL("../dist/server/index.js", import.meta.url);
+workerUrl.searchParams.set("seo-test", `${process.pid}-${Date.now()}`);
+const { default: worker } = await import(workerUrl.href);
 
-async function render() {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
+async function request(path, { host = "prorope.id", protocol = "https:" } = {}) {
   return worker.fetch(
-    new Request("http://localhost/", {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
+    new Request(`${protocol}//${host}${path}`, { headers: { accept: "text/html" } }),
+    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
+    { waitUntil() {}, passThroughOnException() {} },
   );
 }
 
-test("server-renders the starter loading skeleton", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+async function html(path) {
+  const response = await request(path);
+  assert.equal(response.status, 200, `${path} should render successfully`);
+  assert.match(response.headers.get("content-type") || "", /^text\/html\b/i);
+  return response.text();
+}
 
-  const html = await response.text();
-  assert.match(html, developmentPreviewMeta);
-  assert.match(html, /<title>Your site is taking shape<\/title>/i);
-  assert.match(html, /Building your site/);
-  assert.match(html, /Your site is taking shape/);
-  assert.match(
-    html,
-    /Your first version will appear here automatically when it’s ready\./,
-  );
-  assert.doesNotMatch(html, /Codex/);
-  assert.match(html, /react-loading-skeleton/);
-  assert.match(html, /role="status"/);
+test("permanently redirects HTTP and www requests to HTTPS non-www without losing query", async () => {
+  const http = await request("/id/services/painting-blasting?ref=campaign", { protocol: "http:" });
+  assert.equal(http.status, 308);
+  assert.equal(http.headers.get("location"), "https://prorope.id/id/services/painting-blasting?ref=campaign");
+
+  const www = await request("/id/services/rope-access?utm_source=search", { host: "www.prorope.id" });
+  assert.equal(www.status, 308);
+  assert.equal(www.headers.get("location"), "https://prorope.id/id/services/rope-access?utm_source=search");
 });
 
-test("keeps the loading skeleton scoped and disposable", async () => {
-  const [preview, css, page, layout, packageJson, files] = await Promise.all([
-    readFile(new URL("SkeletonPreview.tsx", previewRoot), "utf8"),
-    readFile(new URL("preview.css", previewRoot), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
-    readdir(previewRoot),
-  ]);
+test("renders Indonesian homepage headings, service links, and copy in the initial HTML", async () => {
+  const response = await request("/id");
+  assert.equal(response.status, 200);
+  const body = await response.text();
+  assert.match(body, /<html[^>]*lang="id-ID"/);
+  assert.match(body, /<h1[^>]*>JASA ROPE ACCESS/);
+  assert.match(body, /<em>&amp; PENGECATAN<\/em><br\/>GEDUNG DI JOGJA/);
+  assert.match(body, /href="\/id\/services\/painting-blasting"/);
+  assert.match(body, /href="\/id\/services\/rope-access"/);
+  assert.match(body, /href="\/id\/projects"/);
+});
 
-  assert.deepEqual(files.sort(), ["SkeletonPreview.tsx", "preview.css"]);
-  assert.match(preview, /from "react-loading-skeleton"/);
-  assert.match(preview, /baseColor="#eceae7"/);
-  assert.match(preview, /highlightColor="#f9f8f6"/);
-  assert.match(preview, /duration=\{2\.8\}/);
-  assert.match(preview, /sites-skeleton-search-placeholder/);
-  assert.match(packageJson, /"react-loading-skeleton": "3\.5\.0"/);
+test("renders the painting service title, truthful scope, portfolio location, and Service/FAQ schema", async () => {
+  const body = await html("/id/services/painting-blasting");
+  assert.match(body, /<title>Jasa Pengecatan Gedung di Jogja \| Pro Rope<\/title>/);
+  assert.match(body, /<h1[^>]*>Jasa Pengecatan Gedung di Jogja<\/h1>/);
+  assert.match(body, /Bagaimana cara meminta perkiraan biaya pengecatan gedung/);
+  assert.match(body, /Lokasi: <!-- -->Jember/);
+  assert.match(body, /bukan klaim pekerjaan di Yogyakarta/);
+  assert.match(body, /"@type":"Service"/);
+  assert.match(body, /"@type":"FAQPage"/);
+  assert.match(body, /href="\/id\/news\/biaya-pengecatan-gedung-faktor-penawaran"/);
+});
 
-  const shellIndex = preview.indexOf('className="sites-skeleton-shell"');
-  const statusIndex = preview.indexOf('className="sites-skeleton-status"');
-  assert.ok(shellIndex >= 0 && statusIndex > shellIndex);
-  assert.match(css, /position:\s*fixed/);
-  assert.match(css, /inset:\s*0/);
-  assert.match(css, /opacity:\s*0\.52/);
-  assert.match(css, /prefers-reduced-motion:\s*reduce/);
-  assert.doesNotMatch(css, /#020617|canvas|pets|progress/i);
-  assert.doesNotMatch(
-    preview,
-    /loading-spinner|status-mark|status-progress|canvas|cookie|random/i,
-  );
+test("renders the Yogyakarta rope-access service and local-intent FAQ in the initial HTML", async () => {
+  const body = await html("/id/services/rope-access");
+  assert.match(body, /<title>Jasa Rope Access Jogja &amp; Yogyakarta \| Pro Rope<\/title>/);
+  assert.match(body, /<h1[^>]*>Jasa Rope Access Jogja &amp; Yogyakarta<\/h1>/);
+  assert.match(body, /jasa rope access terdekat/i);
+  assert.match(body, /anchor/i);
+  assert.match(body, /href="\/id\/projects"/);
+  assert.match(body, /"@type":"Service"/);
+  assert.match(body, /"@type":"FAQPage"/);
+});
 
-  assert.match(page, /export const metadata:\s*Metadata/);
-  assert.match(page, /"codex-preview": "development"/);
-  assert.match(page, /<SkeletonPreview \/>/);
-  assert.match(layout, /title:\s*"Starter Project"/);
-  assert.doesNotMatch(layout, /codex-preview|_sites-preview|themeColor|\bViewport\b/);
-  assert.doesNotMatch(css, /(^|\s)(html|body)\s*\{/m);
+test("renders supporting article Markdown headings, ordered lists, and safe internal links", async () => {
+  const body = await html("/id/news/biaya-pengecatan-gedung-faktor-penawaran");
+  assert.match(body, /<title>Biaya Pengecatan Gedung: Faktor yang Menentukan Penawaran \| Pro Rope<\/title>/);
+  assert.match(body, /<h1[^>]*>BIAYA PENGECATAN GEDUNG/);
+  assert.match(body, /<h2>Faktor yang memengaruhi biaya pengecatan gedung<\/h2>/);
+  assert.match(body, /<ol>/);
+  assert.match(body, /href="\/id\/services\/painting-blasting"/);
+  assert.doesNotMatch(body, /&lt;script&gt;|<script>alert/);
+});
 
-  await assert.rejects(
-    access(new URL("public/_sites-preview", templateRoot)),
-  );
+test("serves an accurate sitemap for published fallback content and omits unsupported language alternates", async () => {
+  const response = await request("/sitemap.xml");
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get("content-type") || "", /application\/xml/i);
+  const sitemap = await response.text();
+  assert.match(sitemap, /<loc>https:\/\/prorope\.id\/id\/services\/rope-access<\/loc>/);
+  assert.match(sitemap, /<loc>https:\/\/prorope\.id\/id\/news\/biaya-pengecatan-gedung-faktor-penawaran<\/loc>/);
+  assert.match(sitemap, /<lastmod>2026-10-09<\/lastmod>/);
+  assert.doesNotMatch(sitemap, /hreflang="zh-CN"/);
+  assert.doesNotMatch(sitemap, /hreflang="ja-JP"/);
 });
