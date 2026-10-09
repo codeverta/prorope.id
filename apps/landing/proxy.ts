@@ -11,8 +11,12 @@ export function proxy(request: NextRequest) {
   const canonicalHost = new URL(SITE_URL).hostname.toLowerCase().replace(/^www\./, "");
   const requestHost = currentUrl.hostname.toLowerCase();
   const isSiteHost = requestHost === canonicalHost || requestHost === `www.${canonicalHost}`;
+  const forwardedProtocol = request.headers.get("x-forwarded-proto")?.split(",")[0].trim().toLowerCase();
+  const visitorProtocol = forwardedProtocol === "http" || forwardedProtocol === "https"
+    ? `${forwardedProtocol}:`
+    : currentUrl.protocol;
 
-  if (isSiteHost && (requestHost !== canonicalHost || currentUrl.protocol !== "https:")) {
+  if (isSiteHost && (requestHost !== canonicalHost || visitorProtocol !== "https:")) {
     const canonicalUrl = currentUrl.clone();
     canonicalUrl.protocol = "https:";
     canonicalUrl.hostname = canonicalHost;
